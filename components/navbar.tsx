@@ -1,10 +1,35 @@
+"use client";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { signOut, useSession } from "@/lib/auth/auth-client";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { InputField } from "./fields/input-field";
 
 export default function Navbar() {
+  const session = useSession();
+
+  const user = session?.data?.user;
+  const avatarSrc = user?.image ?? "/images/avatar-placeholder.png";
+  const displayName = user?.name ?? user?.email ?? "User";
+  const initial = displayName.charAt(0).toUpperCase();
+
+  async function handleSignOut() {
+    try {
+      await signOut();
+    } catch (e) {
+      console.error("sign out error", e);
+    }
+  }
+
+  const navItems = [
+    { label: "Meals", href: "/meals" },
+    { label: "Providers", href: "/providers" },
+    ...(user ? [{ label: "Dashboard", href: "/dashboard" }] : []),
+  ];
+
   return (
     <header className="sticky top-0 z-40 border-b bg-background/75 backdrop-blur-sm">
       <div className="mx-auto flex w-[95vw] max-w-7xl items-center justify-between gap-4 py-3">
@@ -20,18 +45,15 @@ export default function Navbar() {
         </div>
 
         <nav className="flex items-center gap-3">
-          <Link
-            href="/meals"
-            className="hidden rounded-md px-3 py-2 text-sm font-medium hover:bg-accent md:inline-flex"
-          >
-            Meals
-          </Link>
-          <Link
-            href="/providers"
-            className="hidden rounded-md px-3 py-2 text-sm font-medium hover:bg-accent md:inline-flex"
-          >
-            Providers
-          </Link>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="hidden rounded-md px-3 py-2 text-sm font-medium hover:bg-accent md:inline-flex"
+            >
+              {item.label}
+            </Link>
+          ))}
 
           <Link
             href="/cart"
@@ -41,19 +63,42 @@ export default function Navbar() {
             🧺
           </Link>
 
-          <Link href="/login" className="hidden md:inline-flex text-sm">
-            Log in
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href="/dashboard/profile"
+                className="flex items-center gap-2"
+              >
+                <Avatar>
+                  <AvatarImage src={avatarSrc} alt={displayName} />
+                  <AvatarFallback>{initial}</AvatarFallback>
+                </Avatar>
+              </Link>
 
-          <Link href="/register">
-            <Button variant="outline" size="sm">
-              Register
-            </Button>
-          </Link>
+              <button
+                onClick={handleSignOut}
+                className="text-sm rounded-md px-3 py-2 hover:bg-accent"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="hidden md:inline-flex text-sm">
+                Log in
+              </Link>
 
-          <Link href="/provider/signup">
-            <Button size="sm">Become a Provider</Button>
-          </Link>
+              <Link href="/register">
+                <Button variant="outline" size="sm">
+                  Register
+                </Button>
+              </Link>
+
+              <Link href="/provider/signup">
+                <Button size="sm">Become a Provider</Button>
+              </Link>
+            </>
+          )}
         </nav>
       </div>
 
