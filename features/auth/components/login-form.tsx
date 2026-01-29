@@ -1,5 +1,6 @@
 "use client";
 
+import { InputField } from "@/components/fields/input-field";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { signIn } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -15,9 +18,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { signIn } from "@/lib/auth/auth-client";
-import { Form } from "@/components/ui/form";
-import { InputField } from "@/components/fields/input-field";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -73,7 +73,7 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-col items-center gap-4">
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
             Enter your email below to login to your account
@@ -107,7 +107,7 @@ export function LoginForm({
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
                     <Link
-                      href="/signup"
+                      href="/register"
                       className="underline underline-offset-4"
                     >
                       Sign up
