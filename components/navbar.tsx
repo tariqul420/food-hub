@@ -1,10 +1,10 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import { InputField } from "./fields/input-field";
 
-export default function Nav() {
+export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b bg-background/75 backdrop-blur-sm">
       <div className="mx-auto flex w-[95vw] max-w-7xl items-center justify-between gap-4 py-3">
@@ -13,19 +13,10 @@ export default function Nav() {
             FoodHub
           </Link>
 
-          <form action="/meals" className="hidden items-center gap-2 md:flex">
-            <div className="flex items-center gap-2 rounded-md border px-2 py-1">
-              <Search className="size-4 text-muted-foreground" />
-              <Input
-                name="q"
-                placeholder="Search meals, cuisines, providers..."
-                className="w-[36ch] border-0 bg-transparent p-0 focus:ring-0"
-              />
-            </div>
-            <Button asChild>
-              <button type="submit">Search</button>
-            </Button>
-          </form>
+          <InputField
+            placeholder="Search meals, cuisines, providers..."
+            className="w-[36ch]"
+          />
         </div>
 
         <nav className="flex items-center gap-3">
