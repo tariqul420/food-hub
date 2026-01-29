@@ -87,7 +87,7 @@ export default function Featured() {
       </div>
 
       {tab === "meals" ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {MEALS.map((m) => (
             <Card key={m.id} className="overflow-hidden">
               <div className="relative h-40 w-full bg-muted">
@@ -133,7 +133,7 @@ export default function Featured() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {PROVIDERS.map((p) => (
             <Card key={p.id} className="p-4">
               <div className="flex items-center gap-3">
