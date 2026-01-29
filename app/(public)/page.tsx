@@ -1,57 +1,166 @@
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+const API = "http://localhost:4000";
+
+type Meal = {
+  id: string | number;
+  name: string;
+  image?: string;
+  description?: string;
+  providerName?: string;
+  provider?: string;
+  price?: number;
+};
+
+async function fetchFeaturedMeals(): Promise<Meal[]> {
+  try {
+    const res = await fetch(`${API}/meals`, { cache: "no-store" });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? (data.slice(0, 6) as Meal[]) : [];
+  } catch (err) {
+    // keep error visible during server logs
+    console.error("fetchFeaturedMeals error:", err);
+    return [];
+  }
+}
+
+const CATEGORIES = [
+  "Pizza",
+  "Burgers",
+  "Sushi",
+  "Salads",
+  "Desserts",
+  "Drinks",
+];
+
+export default async function Home() {
+  const featured: Meal[] = await fetchFeaturedMeals();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="text-2xl font-bold text-black dark:text-white">StackKit</div>
-          <span className="text-xl text-zinc-400">+</span>
-          <Image
-            className="dark:invert"
-            src="/next.svg"
-            alt="Next.js logo"
-            width={100}
-            height={20}
-            priority
-          />
+    <div className="py-12">
+      {/* Hero */}
+      <section className="mb-12 rounded-lg bg-card p-8 shadow-sm">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl">
+              <h1 className="text-4xl font-extrabold leading-tight">
+                FoodHub — Discover & Order Delicious Meals
+              </h1>
+              <p className="mt-3 text-lg text-muted-foreground">
+                Browse menus from local providers, order your favorites, and
+                track delivery — all in one place.
+              </p>
+
+              <div className="mt-6 flex gap-3">
+                <Button asChild>
+                  <Link href="/meals">Explore Meals</Link>
+                </Button>
+                <Link
+                  href="/providers/1"
+                  className="inline-flex items-center rounded-md px-4 py-2 text-sm font-medium hover:bg-accent"
+                >
+                  Browse Providers
+                </Link>
+              </div>
+            </div>
+
+            <div className="hidden w-1/2 items-center justify-end gap-6 lg:flex">
+              <div className="relative h-40 w-40 overflow-hidden rounded-lg">
+                <Image
+                  src="/next.svg"
+                  alt="FoodHub"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            This template includes Next.js, Tailwind CSS, and StackKit best practices. Check out the{" "}
-            <a
-              href="https://github.com/tariqul420/stackkit"
-              className="font-medium text-zinc-950 dark:text-zinc-50 hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
+      </section>
+
+      {/* Categories */}
+      <section className="mb-12">
+        <h2 className="mb-4 text-2xl font-semibold">Categories</h2>
+        <div className="flex gap-3 overflow-auto pb-2">
+          {CATEGORIES.map((c) => (
+            <Link
+              key={c}
+              href={`/meals?category=${encodeURIComponent(c)}`}
+              className="rounded-md bg-background/60 px-4 py-2 text-sm font-medium hover:bg-accent"
             >
-              StackKit repository
-            </a>{" "}
-            for more info.
-          </p>
+              {c}
+            </Link>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full bg-white text-black px-5 transition-colors hover:bg-zinc-200 md:w-40"
-            href="https://nextjs.org/docs"
-            target="_blank"
-            rel="noopener noreferrer"
+      </section>
+
+      {/* Featured meals */}
+      <section>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-2xl font-semibold">Featured Meals</h2>
+          <Link
+            href="/meals"
+            className="text-sm text-muted-foreground hover:underline"
           >
-            Documentation
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full bg-black text-white px-5 transition-colors hover:bg-zinc-900 md:w-40"
-            href="https://github.com/tariqul420/stackkit"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Stackkit GitHub
-          </a>
+            View all
+          </Link>
         </div>
-      </main>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {featured && featured.length ? (
+            featured.map((meal: Meal) => (
+              <Card key={meal.id} className="overflow-hidden">
+                {meal.image && (
+                  <div className="h-44 w-full relative">
+                    <Image
+                      src={meal.image}
+                      alt={meal.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <CardHeader>
+                  <CardTitle>{meal.name}</CardTitle>
+                  <CardDescription>
+                    {meal.providerName ?? meal.provider}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground line-clamp-3">
+                    {meal.description}
+                  </p>
+                </CardContent>
+                <CardAction>
+                  <Link
+                    href={`/meals/${meal.id}`}
+                    className="inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+                  >
+                    View
+                  </Link>
+                </CardAction>
+              </Card>
+            ))
+          ) : (
+            <div className="text-muted-foreground">
+              No featured meals available right now.
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
+
