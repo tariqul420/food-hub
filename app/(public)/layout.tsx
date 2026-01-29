@@ -1,0 +1,11 @@
+export default function RootLayout({ children }: Children) {
+  return (
+    <>
+      {/* <Navbar /> */}
+      <main className="mx-auto w-[90vw] max-w-7xl h-auto overflow-x-hidden min-h-screen">
+        {children}
+      </main>
+      {/* <Footer /> */}
+    </>
+  );
+}
