@@ -1,7 +1,7 @@
-import { requireAdmin } from "@/lib/auth/guard";
+import { requireProvider } from "@/lib/auth/guard";
 
-export default async function AdminLayout({ children }: Children) {
-  await requireAdmin();
+export default async function ProviderLayout({ children }: Children) {
+  await requireProvider();
 
   return <>{children}</>;
 }

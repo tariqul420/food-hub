@@ -62,6 +62,13 @@ export async function requireProvider() {
   return session.user;
 }
 
+export async function requireCustomer() {
+  const session = await getSession();
+  if (!session) return redirectToRole();
+  if (session.user?.role !== "CUSTOMER") return redirectToRole();
+  return session.user;
+}
+
 export async function getUser() {
   const session = await getSession();
   if (!session) return redirectToRole();
