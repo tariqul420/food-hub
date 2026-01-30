@@ -37,16 +37,33 @@ export async function getSession() {
   return null;
 }
 
+export async function redirectToRole() {
+  const session = await getSession();
+  if (!session) return redirect("/login");
+
+  const role = session.user?.role;
+  if (role === "ADMIN") return redirect("/dashboard/admin");
+  if (role === "PROVIDER") return redirect("/dashboard/provider");
+
+  return redirect("/dashboard");
+}
+
 export async function requireAdmin() {
   const session = await getSession();
-  if (!session || session.user?.role !== "ADMIN") {
-    redirect("/login");
-  }
+  if (!session) return redirectToRole();
+  if (session.user?.role !== "ADMIN") return redirectToRole();
+  return session.user;
+}
+
+export async function requireProvider() {
+  const session = await getSession();
+  if (!session) return redirectToRole();
+  if (session.user?.role !== "PROVIDER") return redirectToRole();
   return session.user;
 }
 
 export async function getUser() {
   const session = await getSession();
-  if (!session) redirect("/login");
+  if (!session) return redirectToRole();
   return session.user;
 }

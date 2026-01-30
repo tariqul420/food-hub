@@ -62,6 +62,8 @@ export function LoginForm({
 
       toast.success("Login successful!");
       form.reset();
+      router.refresh();
+      router.push("/dashboard");
 
       await new Promise((resolve) => setTimeout(resolve, 100));
       router.refresh();

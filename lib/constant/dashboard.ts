@@ -7,24 +7,37 @@ export const ADMIN = [
     icon: "LayoutDashboard" as IconMapKey,
   },
   {
-    title: "Projects",
-    url: "/dashboard/admin/projects",
+    title: "Users",
+    url: "/dashboard/admin/users",
+    icon: "Users" as IconMapKey,
+  },
+  {
+    title: "Orders",
+    url: "/dashboard/admin/orders",
+    icon: "ShoppingCart" as IconMapKey,
+  },
+  {
+    title: "Categories",
+    url: "/dashboard/admin/categories",
+    icon: "Tag" as IconMapKey,
+  },
+];
+
+export const PROVIDER = [
+  {
+    title: "Dashboard",
+    url: "/dashboard/provider",
+    icon: "LayoutDashboard" as IconMapKey,
+  },
+  {
+    title: "Menu",
+    url: "/dashboard/provider/menu",
     icon: "FolderKanban" as IconMapKey,
   },
   {
-    title: "Blogs",
-    url: "/dashboard/admin/blogs",
-    icon: "Newspaper" as IconMapKey,
-  },
-  {
-    title: "Contacts",
-    url: "/dashboard/admin/contacts",
-    icon: "Mail" as IconMapKey,
-  },
-  {
-    title: "URL Shortener",
-    url: "/dashboard/admin/url-shortener",
-    icon: "Link2" as IconMapKey,
+    title: "Orders",
+    url: "/dashboard/provider/orders",
+    icon: "ShoppingCart" as IconMapKey,
   },
 ];
 
@@ -35,6 +48,21 @@ export const CUSTOMER = [
     icon: "LayoutDashboard" as IconMapKey,
   },
   {
+    title: "Cart",
+    url: "/dashboard/cart",
+    icon: "ShoppingCart" as IconMapKey,
+  },
+  {
+    title: "Checkout",
+    url: "/dashboard/checkout",
+    icon: "CreditCard" as IconMapKey,
+  },
+  {
+    title: "Orders",
+    url: "/dashboard/orders",
+    icon: "List" as IconMapKey,
+  },
+  {
     title: "Profile",
     url: "/dashboard/profile",
     icon: "User" as IconMapKey,
@@ -43,5 +71,6 @@ export const CUSTOMER = [
 
 export const sidebar = {
   ADMIN,
+  PROVIDER,
   CUSTOMER,
 };

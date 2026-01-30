@@ -2,11 +2,18 @@
 
 import {
   ChevronRight,
+  CreditCard,
   FolderKanban,
   LayoutDashboard,
   Link2,
+  List,
+  Mail,
   MoreVertical,
   Newspaper,
+  ShoppingCart,
+  Tag,
+  User,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -49,6 +56,13 @@ const iconMap = {
   FolderKanban,
   Newspaper,
   Link2,
+  Mail,
+  User,
+  Users,
+  ShoppingCart,
+  CreditCard,
+  Tag,
+  List,
 } as const;
 export type IconMapKey = keyof typeof iconMap;
 
@@ -69,7 +83,9 @@ export function DashboardSidebar({ menu = [], user }: DashboardSidebarProps) {
   const { toggleSidebar } = useSidebar();
 
   const isActive = (url: string) =>
-    url === "/dashboard" || url === "/dashboard/admin"
+    url === "/dashboard" ||
+    url === "/dashboard/admin" ||
+    url === "/dashboard/provider"
       ? pathname === url
       : pathname.startsWith(url);
 
@@ -124,47 +140,25 @@ export function DashboardSidebar({ menu = [], user }: DashboardSidebarProps) {
                       <Tooltip delayDuration={200}>
                         <TooltipTrigger asChild>
                           <SidebarMenuButton
-                            asChild
                             className={cn(
-                              "relative group overflow-hidden rounded-xl transition-colors",
-                              active
-                                ? "bg-accent text-accent-foreground shadow-[inset_0_0_0_1px_var(--color-border)]"
-                                : "hover:bg-muted/60 hover:text-foreground",
+                              "hover:bg-muted dark:hover:bg-muted/80",
+                              active && "bg-muted dark:bg-muted/80",
                             )}
+                            asChild
                           >
                             <Link
                               href={item.url || "#"}
-                              aria-current={active ? "page" : undefined}
                               onClick={() => {
                                 if (
                                   typeof window !== "undefined" &&
                                   window.innerWidth < 768
-                                )
+                                ) {
                                   toggleSidebar();
+                                }
                               }}
-                              className="flex items-center gap-3 px-2.5 py-2"
                             >
-                              {/* Active accent bar */}
-                              <span
-                                className={cn(
-                                  "absolute left-0 top-0 h-full w-1 bg-primary/70 transition-transform",
-                                  active
-                                    ? "translate-x-0"
-                                    : "-translate-x-full group-hover:translate-x-0",
-                                )}
-                                aria-hidden
-                              />
-                              <span
-                                className={cn(
-                                  "grid place-items-center rounded-md border bg-background p-1.5 text-foreground/80",
-                                  active && "border-primary/30",
-                                )}
-                              >
-                                <Icon className="h-4 w-4" />
-                              </span>
-                              <span className="truncate text-sm font-medium">
-                                {item.title}
-                              </span>
+                              <Icon className="h-4 w-4" />
+                              <span>{item.title}</span>
                             </Link>
                           </SidebarMenuButton>
                         </TooltipTrigger>
