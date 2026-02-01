@@ -84,7 +84,7 @@ export default function DataTableFooter<TData extends BaseRecord>({
               <SelectValue placeholder={pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 50, 100].map((size) => (
+              {[25, 50, 75, 100].map((size) => (
                 <SelectItem key={size} value={`${size}`}>
                   {size}
                 </SelectItem>

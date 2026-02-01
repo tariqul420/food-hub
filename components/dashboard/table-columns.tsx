@@ -10,8 +10,8 @@ import { format } from "date-fns";
 export const adminUserColumns: ColumnDef<AdminUserRecord>[] = [
   createSelectionColumn<AdminUserRecord>(),
   {
-    accessorKey: "Title",
-    header: "Title",
+    accessorKey: "Name",
+    header: "Name",
     cell: ({ row }: { row: Row<AdminUserRecord> }) => (
       <h2 className="max-w-36 truncate text-sm font-medium">
         {row.original.name}
@@ -21,12 +21,30 @@ export const adminUserColumns: ColumnDef<AdminUserRecord>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "Published",
-    header: "Published",
+    accessorKey: "Email",
+    header: "Email",
+    cell: ({ row }: { row: Row<AdminUserRecord> }) => (
+      <h3 className="max-w-36 truncate text-sm font-medium">
+        {row.original.email}
+      </h3>
+    ),
+  },
+  {
+    accessorKey: "Role",
+    header: "Role",
     cell: ({ row }: { row: Row<AdminUserRecord> }) => (
       <div className="w-32">
-        <Badge variant="outline" className="px-1.5 py-1">
-          {row.original.isPublished ? "Published" : "Unpublished"}
+        <Badge variant="outline">{row.original.role}</Badge>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Created At",
+    header: "Created At",
+    cell: ({ row }: { row: Row<AdminUserRecord> }) => (
+      <div className="w-32">
+        <Badge variant="outline">
+          {format(new Date(row.original.createdAt), "PPP")}
         </Badge>
       </div>
     ),
@@ -36,7 +54,7 @@ export const adminUserColumns: ColumnDef<AdminUserRecord>[] = [
     header: "Updated At",
     cell: ({ row }: { row: Row<AdminUserRecord> }) => (
       <div className="w-32">
-        <Badge variant="outline" className="px-1.5 py-1">
+        <Badge variant="outline">
           {format(new Date(row.original.updatedAt), "PPP")}
         </Badge>
       </div>

@@ -55,13 +55,13 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <Link
+          {/* <Link
             href="/cart"
             aria-label="Cart"
             className="rounded-md px-2 py-2 hover:bg-accent"
           >
             🧺
-          </Link>
+          </Link> */}
 
           {user ? (
             <>
