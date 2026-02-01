@@ -8,3 +8,12 @@ type AdminUserRecord = BaseRecord & {
   createdAt: string | Date;
   updatedAt: string | Date;
 };
+
+type ProviderMealRecord = BaseRecord & {
+  title: string;
+  price: number;
+  currency: string;
+  isAvailable: boolean;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+};

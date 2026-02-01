@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import api from "@/lib/fetcher";
 import { Star } from "lucide-react";
 import Link from "next/link";
 
@@ -49,8 +50,12 @@ const DUMMY_MEALS = [
   },
 ];
 
-export default function MealsPage() {
+export default async function MealsPage() {
   const meals = DUMMY_MEALS;
+
+  const res = await api.get("/meals");
+
+  console.log(res);
 
   return (
     <section className="py-10">
