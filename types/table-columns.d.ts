@@ -26,3 +26,10 @@ type ProviderOrderRecord = BaseRecord & {
   placedAt: string | Date;
   updatedAt: string | Date;
 };
+
+type AdminCategoryRecord = BaseRecord & {
+  name: string;
+  description?: string | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+};

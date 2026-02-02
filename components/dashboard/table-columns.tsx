@@ -3,6 +3,7 @@
 import { createSelectionColumn } from "@/components/dashboard/data-table";
 import { Badge } from "@/components/ui/badge";
 import {
+  AdminCategoryRecord,
   AdminUserRecord,
   ProviderMealRecord,
   ProviderOrderRecord,
@@ -176,6 +177,44 @@ export const providerOrderColumns: ColumnDef<ProviderOrderRecord>[] = [
     accessorKey: "Updated At",
     header: "Updated At",
     cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
+      <div className="w-32">
+        <Badge variant="outline">
+          {format(new Date(row.original.updatedAt), "PPP")}
+        </Badge>
+      </div>
+    ),
+  },
+];
+
+// category columns for admin
+export const adminCategoryColumns: ColumnDef<AdminCategoryRecord>[] = [
+  createSelectionColumn<AdminCategoryRecord>(),
+  {
+    accessorKey: "Name",
+    header: "Name",
+    cell: ({ row }: { row: Row<AdminCategoryRecord> }) => (
+      <h2 className="max-w-36 truncate text-sm font-medium">
+        {row.original.name}
+      </h2>
+    ),
+    filterFn: "includesString",
+    enableHiding: false,
+  },
+  {
+    accessorKey: "Created At",
+    header: "Created At",
+    cell: ({ row }: { row: Row<AdminCategoryRecord> }) => (
+      <div className="w-32">
+        <Badge variant="outline">
+          {format(new Date(row.original.createdAt), "PPP")}
+        </Badge>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Updated At",
+    header: "Updated At",
+    cell: ({ row }: { row: Row<AdminCategoryRecord> }) => (
       <div className="w-32">
         <Badge variant="outline">
           {format(new Date(row.original.updatedAt), "PPP")}
