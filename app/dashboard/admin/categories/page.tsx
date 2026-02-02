@@ -24,6 +24,10 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
         total={res.data?.pagination?.totalItems || 0}
         data={(res.data?.categories as AdminCategoryRecord[]) || []}
         columns={adminCategoryColumns || []}
+        actionLink={{
+          label: "Add Category",
+          href: "/dashboard/admin/categories/add",
+        }}
       />
     </>
   );

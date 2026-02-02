@@ -222,4 +222,9 @@ export const adminCategoryColumns: ColumnDef<AdminCategoryRecord>[] = [
       </div>
     ),
   },
+  {
+    id: "Actions",
+    header: "Actions",
+    cell: ({ row }) => <AdminCategoryTableMenu row={row} />,
+  },
 ];
