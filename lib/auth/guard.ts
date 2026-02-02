@@ -18,13 +18,7 @@ async function fetchSessionFromEndpoint(ep: string) {
 }
 
 export async function getSession() {
-  const endpoints = [
-    "/api/auth/get-session",
-    "/api/auth/session",
-    "/api/session",
-    "/session",
-    "/api/auth/me",
-  ];
+  const endpoints = ["/api/auth/get-session"];
 
   for (const ep of endpoints) {
     const payload = await fetchSessionFromEndpoint(ep);

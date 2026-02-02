@@ -2,7 +2,11 @@
 
 import { createSelectionColumn } from "@/components/dashboard/data-table";
 import { Badge } from "@/components/ui/badge";
-import { AdminUserRecord, ProviderMealRecord } from "@/types/table-columns";
+import {
+  AdminUserRecord,
+  ProviderMealRecord,
+  ProviderOrderRecord,
+} from "@/types/table-columns";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 
@@ -111,6 +115,67 @@ export const providerMealColumns: ColumnDef<ProviderMealRecord>[] = [
     accessorKey: "Updated At",
     header: "Updated At",
     cell: ({ row }: { row: Row<ProviderMealRecord> }) => (
+      <div className="w-32">
+        <Badge variant="outline">
+          {format(new Date(row.original.updatedAt), "PPP")}
+        </Badge>
+      </div>
+    ),
+  },
+];
+
+// order columns for provider
+export const providerOrderColumns: ColumnDef<ProviderOrderRecord>[] = [
+  createSelectionColumn<ProviderOrderRecord>(),
+  {
+    accessorKey: "Customer Name",
+    header: "Customer Name",
+    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
+      <h2 className="max-w-36 truncate text-sm font-medium">
+        {row.original.customerName}
+      </h2>
+    ),
+    filterFn: "includesString",
+    enableHiding: false,
+  },
+  {
+    accessorKey: "Delivery Address",
+    header: "Delivery Address",
+    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
+      <h3 className="max-w-36 truncate text-sm font-medium">{row.original.deliveryAddress}</h3>
+    ),},
+  {
+    accessorKey: "Total",
+    header: "Total",
+    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
+      <h3 className="max-w-36 truncate text-sm font-medium">
+        ${row.original.total}
+      </h3>
+    ),
+  },
+  {
+    accessorKey: "Status",
+    header: "Status",
+    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
+      <div className="w-32">
+        <Badge variant="outline">{row.original.status}</Badge>
+      </div>),
+  },
+  {
+    accessorKey: "Placed At",
+    header: "Placed At",
+    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
+      <div className="w-32">
+        <Badge variant="outline">
+          {format(new Date(row.original.placedAt), "PPP")}
+        </Badge>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Updated At",
+    header: "Updated At",
+    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
       <div className="w-32">
         <Badge variant="outline">
           {format(new Date(row.original.updatedAt), "PPP")}

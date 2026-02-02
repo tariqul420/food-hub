@@ -19,8 +19,6 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
     },
   );
 
-  console.log(res);
-
   return (
     <>
       <DataTable
@@ -29,6 +27,10 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
         total={res.data?.pagination?.totalItems || 0}
         data={(res.data?.meals as ProviderMealRecord[]) || []}
         columns={providerMealColumns || []}
+        actionLink={{
+          label: "Add Menu",
+          href: "/dashboard/provider/menu/add",
+        }}
       />
     </>
   );

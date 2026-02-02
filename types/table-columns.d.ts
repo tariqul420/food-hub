@@ -17,3 +17,12 @@ type ProviderMealRecord = BaseRecord & {
   createdAt: string | Date;
   updatedAt: string | Date;
 };
+
+type ProviderOrderRecord = BaseRecord & {
+  customerName: string;
+  deliveryAddress: string;
+  total: number;
+  status: string;
+  placedAt: string | Date;
+  updatedAt: string | Date;
+};
