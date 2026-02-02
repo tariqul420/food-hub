@@ -210,27 +210,6 @@ export default function DataTable<T extends BaseRecord>({
         <div className="flex flex-wrap items-center gap-2">
           <DataTableColumnSelector table={table} />
 
-          {actionModal && (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="h-8">
-                  <IconPlus size={16} />
-                  <span>{actionModal.label}</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-h-[80vh] max-w-150 overflow-y-auto">
-                {actionModal.title && (
-                  <DialogHeader>
-                    <DialogTitle className="text-center text-2xl">
-                      {actionModal.title}
-                    </DialogTitle>
-                  </DialogHeader>
-                )}
-                {actionModal.form}
-              </DialogContent>
-            </Dialog>
-          )}
-
           {/* Search occupies leftover space on small screens */}
           <div className="flex-1 sm:flex-none">
             <SearchBar />
@@ -271,6 +250,26 @@ export default function DataTable<T extends BaseRecord>({
 
         {/* RIGHT */}
         <div className="flex items-center justify-end gap-2">
+          {actionModal && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="h-8">
+                  <IconPlus size={16} />
+                  <span>{actionModal.label}</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-h-[80vh] max-w-150 overflow-y-auto">
+                {actionModal.title && (
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-2xl">
+                      {actionModal.title}
+                    </DialogTitle>
+                  </DialogHeader>
+                )}
+                {actionModal.form}
+              </DialogContent>
+            </Dialog>
+          )}
           {actionLink && (
             <Button variant="outline" asChild>
               <Link href={actionLink.href} className="flex items-center gap-2">
