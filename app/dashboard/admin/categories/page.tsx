@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import DataTable from "@/components/dashboard/data-table";
 import { adminCategoryColumns } from "@/components/dashboard/table-columns";
+import CategoryForm from "@/features/category/components/category-form";
 import api from "@/lib/fetcher";
 import { AdminCategoryRecord } from "@/types/table-columns";
 
@@ -24,9 +25,10 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
         total={res.data?.pagination?.totalItems || 0}
         data={(res.data?.categories as AdminCategoryRecord[]) || []}
         columns={adminCategoryColumns || []}
-        actionLink={{
+        actionModal={{
           label: "Add Category",
-          href: "/dashboard/admin/categories/add",
+          title: "Add Category",
+          form: <CategoryForm />,
         }}
       />
     </>

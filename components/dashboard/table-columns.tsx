@@ -2,6 +2,7 @@
 
 import { createSelectionColumn } from "@/components/dashboard/data-table";
 import { Badge } from "@/components/ui/badge";
+import AdminCategoryTableMenu from "@/features/category/components/admin-category-table-menu";
 import {
   AdminCategoryRecord,
   AdminUserRecord,

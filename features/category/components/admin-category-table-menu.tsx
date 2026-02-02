@@ -56,12 +56,12 @@ export default function AdminCategoryTableMenu({
 
   const handleEditCategory = async (data: z.infer<typeof formSchema>) => {
     try {
-      if (!row.original._id) {
+      if (!row.original.id) {
         throw new Error("Category ID is required");
       }
 
       await toast.promise(
-        api.put(`/categories/${row.original._id}`, { name: data.name }),
+        api.put(`/categories/${row.original.id}`, { name: data.name }),
         {
           loading: "Saving information...",
           success: () => {
@@ -83,11 +83,11 @@ export default function AdminCategoryTableMenu({
 
   const handleDeleteCategory = async () => {
     try {
-      if (!row.original._id) {
+      if (!row.original.id) {
         throw new Error("Category ID is required");
       }
 
-      await toast.promise(api.del(`/categories/${row.original._id}`), {
+      await toast.promise(api.del(`/categories/${row.original.id}`), {
         loading: "Deleting category...",
         success: () => {
           setIsDeleteDialogOpen(false);

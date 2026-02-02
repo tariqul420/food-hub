@@ -1,11 +1,15 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-
 const BASE = process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:4000";
 
 async function fetchSessionFromEndpoint(ep: string) {
   try {
-    const hdrs = Object.fromEntries(await headers());
+    const hdrsModule = await import("next/headers");
+    const headersFn = (hdrsModule as unknown as { headers?: unknown }).headers;
+    const entries =
+      typeof headersFn === "function" ? await headersFn() : headersFn;
+    const hdrs = Object.fromEntries(
+      (entries as Iterable<readonly [string, string]>) || [],
+    );
+
     const res = await fetch(`${BASE}${ep}`, {
       headers: hdrs,
       cache: "no-store",
@@ -33,6 +37,7 @@ export async function getSession() {
 
 export async function redirectToRole() {
   const session = await getSession();
+  const { redirect } = await import("next/navigation");
   if (!session) return redirect("/login");
 
   const role = session.user?.role;

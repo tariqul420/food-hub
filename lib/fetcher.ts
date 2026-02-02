@@ -119,6 +119,10 @@ async function request<T = unknown>(
   const initReq: RequestInit = {
     method: method ?? (init.method as string) ?? (json ? "POST" : "GET"),
     headers: finalHeaders,
+    // include credentials (cookies) when running in the browser so auth cookies are sent
+    ...(typeof window !== "undefined"
+      ? { credentials: "include" as RequestCredentials }
+      : {}),
     ...init,
   };
 
