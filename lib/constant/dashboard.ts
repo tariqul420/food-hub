@@ -39,6 +39,11 @@ export const PROVIDER = [
     url: "/dashboard/provider/orders",
     icon: "ShoppingCart" as IconMapKey,
   },
+  {
+    title: "Profile",
+    url: "/dashboard/provider/profile",
+    icon: "User" as IconMapKey,
+  },
 ];
 
 export const CUSTOMER = [

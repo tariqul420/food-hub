@@ -1,42 +1,44 @@
 import ProviderForm from "@/features/provider/components/provider-form";
 import { getUser } from "@/lib/auth/guard";
 import api from "@/lib/fetcher";
-import * as React from "react";
+
+interface Provider {
+  id: string;
+  name: string;
+  description?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  logo?: string;
+  isActive?: boolean;
+}
 
 export default async function page() {
   await getUser();
 
   try {
-    const res = await api.get("/providers/me");
-    const provider = (res as unknown as { data?: unknown }).data ?? res;
-    const p = provider as
-      | {
-          id: string;
-          name: string;
-          description?: string;
-          phone?: string;
-          email?: string;
-          address?: string;
-          city?: string;
-          country?: string;
-          logo?: string;
-          isActive?: boolean;
-        }
-      | null
-      | undefined;
+    const res = await api.get<{ data?: Provider } | Provider>("/providers/me");
+    const provider = (res as { data?: Provider } | Provider).hasOwnProperty(
+      "data",
+    )
+      ? (res as { data?: Provider }).data
+      : (res as Provider | undefined);
 
     return (
-      <React.Fragment>
-        <ProviderForm provider={p} />
-      </React.Fragment>
+      <main>
+        <h1 className="text-2xl font-bold mb-4">Provider Profile</h1>
+        <ProviderForm provider={provider} />
+      </main>
     );
   } catch (err: unknown) {
-    // If provider not found (404) or other error, render empty form so user can create one
     console.error("Fetch provider error:", err);
     return (
-      <React.Fragment>
+      <main className="max-w-4xl mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-4">Provider Profile</h1>
         <ProviderForm />
-      </React.Fragment>
+      </main>
     );
   }
 }

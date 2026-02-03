@@ -63,9 +63,8 @@ export default function ProviderForm({
     if (provider) {
       toast.promise(api.put(`/providers/${provider.id}`, transformedValues), {
         loading: "Updating provider...",
-        success: (updated: unknown) => {
-          const u = updated as { id: string };
-          router.push(`/dashboard/provider/profile/${u.id}`);
+        success: () => {
+          router.push(`/dashboard/provider/profile`);
           router.refresh();
           return "Provider updated!";
         },
@@ -77,11 +76,10 @@ export default function ProviderForm({
     } else {
       toast.promise(api.post("/providers", transformedValues), {
         loading: "Creating provider...",
-        success: (created: unknown) => {
-          const c = created as { id: string };
-          router.refresh();
+        success: () => {
           form.reset();
-          router.push(`/dashboard/provider/profile/${c.id}`);
+          router.push(`/dashboard/provider/profile`);
+          router.refresh();
           return "Provider created successfully!";
         },
         error: (error) => {
