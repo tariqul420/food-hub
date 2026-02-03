@@ -3,6 +3,7 @@
 import { createSelectionColumn } from "@/components/dashboard/data-table";
 import { Badge } from "@/components/ui/badge";
 import AdminCategoryTableMenu from "@/features/category/components/admin-category-table-menu";
+import ProviderMealsTableMenu from "@/features/menu/components/provider-meals-table-menu";
 import {
   AdminCategoryRecord,
   AdminUserRecord,
@@ -100,7 +101,7 @@ export const providerMealColumns: ColumnDef<ProviderMealRecord>[] = [
           {row.original.isAvailable ? "Available" : "Unavailable"}
         </Badge>
       </div>
-    ),  
+    ),
   },
   {
     accessorKey: "Created At",
@@ -123,6 +124,11 @@ export const providerMealColumns: ColumnDef<ProviderMealRecord>[] = [
         </Badge>
       </div>
     ),
+  },
+  {
+    id: "Actions",
+    header: "Actions",
+    cell: ({ row }) => <ProviderMealsTableMenu row={row} />,
   },
 ];
 

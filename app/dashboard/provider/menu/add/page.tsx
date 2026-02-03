@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import MenuForm from "@/features/menu/components/menu-form";
 import { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
 
 export const metadata: Metadata = {
@@ -10,7 +11,9 @@ export default async function add() {
   return (
     <>
       <Card>
-        <CardContent>{/* <MenuForm /> */}</CardContent>
+        <CardContent>
+          <MenuForm />
+        </CardContent>
       </Card>
     </>
   );

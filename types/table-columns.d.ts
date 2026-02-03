@@ -10,6 +10,7 @@ type AdminUserRecord = BaseRecord & {
 };
 
 type ProviderMealRecord = BaseRecord & {
+  id: string;
   title: string;
   price: number;
   currency: string;

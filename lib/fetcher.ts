@@ -215,19 +215,6 @@ export const api = {
   ) {
     return request<T>(url, { ...(opts || {}), json }, "DELETE");
   },
-  fetchById<T = unknown>(
-    url: string,
-    id: string | number,
-    key = "id",
-    appendToPath = true,
-    opts?: FetcherOptions,
-  ) {
-    const target = appendToPath ? `${url.replace(/\/$/, "")}/${id}` : url;
-    const params = appendToPath
-      ? undefined
-      : { ...(opts?.params || {}), [key]: id };
-    return request<T>(target, { ...(opts || {}), params }, "GET");
-  },
 };
 
 export default api;
