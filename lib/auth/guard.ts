@@ -1,3 +1,5 @@
+import { api } from "../fetcher";
+
 const BASE = process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:4000";
 
 async function fetchSessionFromEndpoint(ep: string) {
@@ -72,4 +74,19 @@ export async function getUser() {
   const session = await getSession();
   if (!session) return redirectToRole();
   return session.user;
+}
+
+export async function getProvider() {
+  interface ProviderProfile {
+    id: string;
+    name: string;
+  }
+
+  const session = await getSession();
+  if (!session) return redirectToRole();
+  if (session.user?.role !== "PROVIDER") return redirectToRole();
+
+  const res = await api.get<{ data?: ProviderProfile }>(`/providers/me`);
+
+  return res.data || null;
 }

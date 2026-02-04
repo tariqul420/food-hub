@@ -14,11 +14,19 @@ type Order = {
   placedAt: string;
   items: {
     id: string;
-    mealTitle: string;
     unitPrice: number;
     quantity: number;
     subtotal: number;
+    meal: {
+      id: string;
+      title: string;
+      image?: string;
+    } | null;
   }[];
+  provider: {
+    id: string;
+    name: string;
+  } | null;
 };
 
 type ApiResponse = {
@@ -125,7 +133,7 @@ export default function OrdersPage() {
                       className="text-sm text-muted-foreground flex justify-between"
                     >
                       <span>
-                        {item.mealTitle} × {item.quantity}
+                        {item.meal?.title || "Unknown Meal"} × {item.quantity}
                       </span>
                       <span>${item.subtotal.toFixed(2)}</span>
                     </li>

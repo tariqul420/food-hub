@@ -67,6 +67,8 @@ export function SignupForm({
 
       toast.success("Account created successfully!");
       form.reset();
+      router.push("/dashboard");
+      
       await new Promise((resolve) => setTimeout(resolve, 100));
       router.refresh();
     } catch (error) {

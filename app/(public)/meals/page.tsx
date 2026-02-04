@@ -7,6 +7,7 @@ interface MealItem {
   description?: string | null;
   image?: string | null;
   price?: number | string;
+  providerProfileId?: string;
   provider?: { id: string; name: string } | null;
 }
 
@@ -26,6 +27,8 @@ export default async function MealsPage() {
               image={meal.image ?? undefined}
               price={meal.price}
               description={meal.description ?? undefined}
+              providerName={meal.provider?.name}
+              providerProfileId={meal.providerProfileId}
             />
           ))
         ) : (

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import type { CartItem } from "@/hooks/use-cart";
 import { useCart } from "@/hooks/use-cart";
 import { useSession } from "@/lib/auth/auth-client";
 import { api } from "@/lib/fetcher";
@@ -48,6 +49,7 @@ export default function CheckoutPage() {
 
   const totalPrice = getTotalPrice();
   const deliveryFee = 2.0;
+  // tax is 10%
   const tax = totalPrice * 0.1;
   const finalTotal = totalPrice + deliveryFee + tax;
 
@@ -63,23 +65,21 @@ export default function CheckoutPage() {
       const itemsByProvider = items.reduce(
         (acc, item) => {
           const providerId = item.providerProfileId || "unknown";
-          if (!acc[providerId]) {
-            acc[providerId] = [];
-          }
+          if (!acc[providerId]) acc[providerId] = [];
           acc[providerId].push(item);
           return acc;
         },
-        {} as Record<string, typeof items>,
+        {} as Record<string, CartItem[]>,
       );
 
       // Create order for each provider
       const orderPromises = Object.entries(itemsByProvider).map(
         async ([providerId, providerItems]) => {
           const orderData = {
+            customerId: session?.user?.id,
             deliveryAddress: `${data.address}, ${data.city}`,
             items: providerItems.map((item) => ({
               mealId: item.mealId,
-              mealTitle: item.title,
               unitPrice: item.price,
               quantity: item.quantity,
             })),
@@ -92,9 +92,7 @@ export default function CheckoutPage() {
 
       await Promise.all(orderPromises);
 
-      toast.success("Order placed successfully!", {
-        description: "Your order has been received and is being processed.",
-      });
+      toast.success("Order placed successfully!");
 
       clearCart();
       router.push("/dashboard/orders");

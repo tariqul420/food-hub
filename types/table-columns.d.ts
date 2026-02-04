@@ -20,7 +20,10 @@ type ProviderMealRecord = BaseRecord & {
 };
 
 type ProviderOrderRecord = BaseRecord & {
-  customerName: string;
+  customer: {
+    name: string;
+    email: string;
+  };
   deliveryAddress: string;
   total: number;
   status: string;

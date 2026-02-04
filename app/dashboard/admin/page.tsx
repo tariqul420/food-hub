@@ -41,8 +41,11 @@ type Order = {
   customer: User | null;
   items: {
     id: string;
-    mealTitle: string;
     quantity: number;
+    meal: {
+      id: string;
+      title: string;
+    } | null;
   }[];
 };
 

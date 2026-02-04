@@ -4,6 +4,7 @@ import { createSelectionColumn } from "@/components/dashboard/data-table";
 import { Badge } from "@/components/ui/badge";
 import AdminCategoryTableMenu from "@/features/category/components/admin-category-table-menu";
 import ProviderMealsTableMenu from "@/features/menu/components/provider-meals-table-menu";
+import OrderTableMenu from "@/features/order/components/order-table-menu";
 import {
   AdminCategoryRecord,
   AdminUserRecord,
@@ -140,18 +141,12 @@ export const providerOrderColumns: ColumnDef<ProviderOrderRecord>[] = [
     header: "Customer Name",
     cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
       <h2 className="max-w-36 truncate text-sm font-medium">
-        {row.original.customerName}
+        {row.original.customer.name}
       </h2>
     ),
     filterFn: "includesString",
     enableHiding: false,
   },
-  {
-    accessorKey: "Delivery Address",
-    header: "Delivery Address",
-    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
-      <h3 className="max-w-36 truncate text-sm font-medium">{row.original.deliveryAddress}</h3>
-    ),},
   {
     accessorKey: "Total",
     header: "Total",
@@ -167,7 +162,8 @@ export const providerOrderColumns: ColumnDef<ProviderOrderRecord>[] = [
     cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
       <div className="w-32">
         <Badge variant="outline">{row.original.status}</Badge>
-      </div>),
+      </div>
+    ),
   },
   {
     accessorKey: "Placed At",
@@ -190,6 +186,11 @@ export const providerOrderColumns: ColumnDef<ProviderOrderRecord>[] = [
         </Badge>
       </div>
     ),
+  },
+  {
+    id: "Actions",
+    header: "Actions",
+    cell: ({ row }) => <OrderTableMenu row={row} />,
   },
 ];
 

@@ -20,10 +20,13 @@ type Order = {
   placedAt: string;
   items: {
     id: string;
-    mealTitle: string;
     unitPrice: number;
     quantity: number;
     subtotal: number;
+    meal: {
+      id: string;
+      title: string;
+    } | null;
   }[];
 };
 
