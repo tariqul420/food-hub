@@ -1,6 +1,8 @@
 "use client";
 
+import ImageUploaderField from "@/components/fields/image-uploader-field";
 import { InputField } from "@/components/fields/input-field";
+import TextareaField from "@/components/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import api from "@/lib/fetcher";
@@ -94,15 +96,9 @@ export default function ProviderForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 rounded-lg border p-6 shadow-md"
+        className="space-y-6 rounded-lg border p-6 shadow-md grid grid-cols-1 md:grid-cols-2 gap-4"
       >
         <InputField name="name" label="Name" placeholder="Provider name" />
-
-        <InputField
-          name="description"
-          label="Description"
-          placeholder="Short description"
-        />
 
         <InputField name="phone" label="Phone" placeholder="Phone" />
 
@@ -114,7 +110,20 @@ export default function ProviderForm({
 
         <InputField name="country" label="Country" placeholder="Country" />
 
-        <InputField name="logo" label="Logo URL" placeholder="Logo URL" />
+        <TextareaField
+          name="description"
+          label="Description"
+          placeholder="Short description"
+          className="col-span-1 sm:col-span-2"
+        />
+
+        {/* Image */}
+        <ImageUploaderField
+          name="logo"
+          label="Logo"
+          multiple={false}
+          className="col-span-1"
+        />
 
         <InputField name="isActive" label="Active" type="checkbox" />
 

@@ -215,7 +215,34 @@ export default function MenuForm({ menu }: MenuFormProps) {
         />
 
         {/* Currency */}
-        <InputField name="currency" label="Currency" placeholder="USD" />
+        <FormItem className="space-y-2">
+          <FormLabel>Currency</FormLabel>
+          <FormControl>
+            <FormField
+              name="currency"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(v) => field.onChange(v)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD - US Dollar</SelectItem>
+                    <SelectItem value="EUR">EUR - Euro</SelectItem>
+                    <SelectItem value="GBP">GBP - British Pound</SelectItem>
+                    <SelectItem value="BDT">BDT - Bangladeshi Taka</SelectItem>
+                    <SelectItem value="INR">INR - Indian Rupee</SelectItem>
+                    <SelectItem value="CAD">CAD - Canadian Dollar</SelectItem>
+                    <SelectItem value="AUD">AUD - Australian Dollar</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
 
         {/* Image */}
         <ImageUploaderField name="image" label="Food Image" multiple={false} />

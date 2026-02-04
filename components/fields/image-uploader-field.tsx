@@ -34,7 +34,6 @@ async function uploadToCloudinary(file: File): Promise<string> {
   const preset = "naturalsefa-v2-n";
 
   if (!cloudName || !preset) {
-    console.error("❌ Cloudinary env missing", { cloudName, preset });
     throw new Error("Cloudinary is not configured properly");
   }
 

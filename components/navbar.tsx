@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signOut, useSession } from "@/lib/auth/auth-client";
 import { Search } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { InputField } from "./fields/input-field";
 
 export default function Navbar() {
   const session = useSession();
@@ -34,14 +34,15 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 border-b bg-background/75 backdrop-blur-sm">
       <div className="mx-auto flex w-[95vw] max-w-7xl items-center justify-between gap-4 py-3">
         <div className="flex items-center gap-4">
+          <Image
+            src="/images/logo.png"
+            alt="FoodHub Logo"
+            width={30}
+            height={30}
+          />
           <Link href="/" className="text-lg font-semibold">
             FoodHub
           </Link>
-
-          <InputField
-            placeholder="Search meals, cuisines, providers..."
-            className="w-[36ch]"
-          />
         </div>
 
         <nav className="flex items-center gap-3">

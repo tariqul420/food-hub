@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getUser } from "@/lib/auth/guard";
+import { requireCustomer } from "@/lib/auth/guard";
 import Link from "next/link";
 
 export default async function page() {
-  const user = await getUser();
+  const user = await requireCustomer();
 
   const role = user?.role;
 
