@@ -61,10 +61,7 @@ export default function ProviderMealsTableMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-32">
         <DropdownMenuItem>
-          <Link
-            href={`/dashboard/provider/menu/${row.original.id}`}
-            className="block w-full"
-          >
+          <Link href={`/meals/${row.original.id}`} className="block w-full">
             Details
           </Link>
         </DropdownMenuItem>

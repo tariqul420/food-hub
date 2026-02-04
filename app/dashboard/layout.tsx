@@ -12,8 +12,6 @@ export default async function layout({
 }) {
   const user = await getUser();
   const role = user?.role as Role | undefined;
-  // `getUser()` ticatealready redirects unauthend users to the appropriate page.
-  // Removing `requireCustomer()` prevents role-based redirect loops in nested dashboard routes.
 
   return (
     <SidebarProvider>

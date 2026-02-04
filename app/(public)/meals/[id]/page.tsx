@@ -1,3 +1,4 @@
+import AddToCart from "@/components/buttons/add-to-cart";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import api from "@/lib/fetcher";
-import { Star } from "lucide-react";
 import Link from "next/link";
 
 interface MealDetail {
@@ -76,10 +76,6 @@ export default async function MealPage({ params }: { params: { id: string } }) {
                   <div className="text-xl font-semibold">${meal.price}</div>
                 </div>
                 <div className="flex flex-col items-end">
-                  <div className="flex items-center gap-1">
-                    <Star className="size-4 text-amber-500" />{" "}
-                    <span className="font-medium">&nbsp;</span>
-                  </div>
                   <Badge className="mt-2">
                     {meal.isAvailable ? "Available" : "Unavailable"}
                   </Badge>
@@ -87,9 +83,14 @@ export default async function MealPage({ params }: { params: { id: string } }) {
               </div>
 
               <div className="mt-4 flex gap-2">
-                <Button asChild>
-                  <Link href="#">Add to cart</Link>
-                </Button>
+                <AddToCart
+                  id={meal.id}
+                  title={meal.title}
+                  price={meal.price}
+                  image={meal.image}
+                  providerName={meal.providerProfileId}
+                  providerProfileId={meal.providerProfileId}
+                />
                 {meal.providerProfileId && (
                   <Button variant="outline" asChild>
                     <Link href={`/providers/${meal.providerProfileId}`}>

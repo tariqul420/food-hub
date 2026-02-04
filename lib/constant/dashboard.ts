@@ -67,11 +67,6 @@ export const CUSTOMER = [
     url: "/dashboard/orders",
     icon: "List" as IconMapKey,
   },
-  {
-    title: "Profile",
-    url: "/dashboard/profile",
-    icon: "User" as IconMapKey,
-  },
 ];
 
 export const sidebar = {

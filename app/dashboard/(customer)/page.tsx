@@ -9,21 +9,65 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getUser } from "@/lib/auth/guard";
+import { api } from "@/lib/fetcher";
 import Link from "next/link";
+
+type Order = {
+  id: string;
+  deliveryAddress: string;
+  total: number;
+  status: string;
+  placedAt: string;
+  items: {
+    id: string;
+    mealTitle: string;
+    unitPrice: number;
+    quantity: number;
+    subtotal: number;
+  }[];
+};
+
+type ApiResponse = {
+  success: boolean;
+  data: Order[];
+  message?: string;
+};
 
 export default async function page() {
   const user = await getUser();
 
-  const stats = { orders: 6, saved: 12 };
-  const recentOrders = [
-    { id: "ORD-900", items: 2, total: "$22.00", status: "DELIVERED" },
-    { id: "ORD-901", items: 1, total: "$8.50", status: "DELIVERED" },
-  ];
+  // Fetch real orders data
+  let orders: Order[] = [];
+  try {
+    const response = await api.get<ApiResponse>("/orders", {
+      customerId: user?.id,
+    });
+    orders = response.data || [];
+  } catch (error) {
+    console.error("Failed to fetch orders:", error);
+  }
 
-  const savedMeals = [
-    { id: "MEAL-01", name: "Chicken Biryani", provider: "Royal Kitchen" },
-    { id: "MEAL-02", name: "Veg Thali", provider: "Green Leaf" },
-  ];
+  // Calculate stats
+  const stats = {
+    orders: orders.length,
+    saved: 0, // TODO: Implement saved meals functionality
+  };
+
+  // Get recent orders (last 5)
+  const recentOrders = orders
+    .sort(
+      (a, b) => new Date(b.placedAt).getTime() - new Date(a.placedAt).getTime(),
+    )
+    .slice(0, 5)
+    .map((order) => ({
+      id: order.id,
+      items: order.items.length,
+      total: `$${order.total.toFixed(2)}`,
+      status: order.status,
+    }));
+
+  // TODO: Fetch saved meals from API when implemented
+  const savedMeals: { id: string; name: string; provider: string }[] = [];
 
   return (
     <div className="space-y-6">
@@ -94,14 +138,39 @@ export default async function page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recentOrders.map((o) => (
-                  <TableRow key={o.id}>
-                    <TableCell>{o.id}</TableCell>
-                    <TableCell>{o.items}</TableCell>
-                    <TableCell>{o.total}</TableCell>
-                    <TableCell>{o.status}</TableCell>
+                {recentOrders.length > 0 ? (
+                  recentOrders.map((o) => (
+                    <TableRow key={o.id}>
+                      <TableCell className="font-medium">
+                        {o.id.slice(0, 8)}...
+                      </TableCell>
+                      <TableCell>{o.items}</TableCell>
+                      <TableCell>{o.total}</TableCell>
+                      <TableCell>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                            o.status === "DELIVERED"
+                              ? "bg-green-100 text-green-700"
+                              : o.status === "CANCELLED"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {o.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      className="text-center text-muted-foreground"
+                    >
+                      No orders yet
+                    </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
             <div className="flex justify-end mt-4">
@@ -118,22 +187,28 @@ export default async function page() {
           </CardHeader>
           <CardContent>
             <ul className="space-y-3">
-              {savedMeals.map((m) => (
-                <li key={m.id} className="flex items-start justify-between">
-                  <div>
-                    <div className="font-medium">{m.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {m.provider}
+              {savedMeals.length > 0 ? (
+                savedMeals.map((m) => (
+                  <li key={m.id} className="flex items-start justify-between">
+                    <div>
+                      <div className="font-medium">{m.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {m.provider}
+                      </div>
                     </div>
-                  </div>
-                  <Link
-                    href={`/meals/${m.id}`}
-                    className="text-sm text-primary"
-                  >
-                    View
-                  </Link>
-                </li>
-              ))}
+                    <Link
+                      href={`/meals/${m.id}`}
+                      className="text-sm text-primary"
+                    >
+                      View
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <div className="text-center text-muted-foreground py-4">
+                  No saved meals yet
+                </div>
+              )}
             </ul>
             <div className="flex justify-end mt-4">
               <Link href="/meals">

@@ -9,16 +9,74 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getUser } from "@/lib/auth/guard";
+import api from "@/lib/fetcher";
 import Link from "next/link";
+
+interface ProviderProfile {
+  id: string;
+  name: string;
+}
+
+interface OrderItem {
+  id: string;
+  mealId?: string | null;
+  mealTitle: string;
+  unitPrice: number;
+  quantity: number;
+  subtotal: number;
+}
+
+type OrderStatus = "PLACED" | "PREPARING" | "READY" | "DELIVERED" | "CANCELLED";
+
+interface Order {
+  id: string;
+  customerId?: string | null;
+  total: number;
+  status: OrderStatus;
+  items: OrderItem[];
+}
 
 export default async function page() {
   const user = await getUser();
 
-  const stats = { incoming: 5, preparing: 3, ready: 2 };
-  const recent = [
-    { id: "ORD-101", customer: "Sam W.", total: "$14.00", status: "PREPARING" },
-    { id: "ORD-102", customer: "Lina M.", total: "$9.50", status: "PLACED" },
-  ];
+      const pRes = await api.get<{ data?: ProviderProfile }>(`/providers/me`);
+      const provider = (pRes as { data?: ProviderProfile }).data ?? null;
+
+      if (!provider) {
+        return (
+          <section className="py-10">
+            <Card>
+              <CardHeader>
+                <CardTitle>Complete your provider profile</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  We could not find a provider profile for your account. To use
+                  the provider dashboard and receive orders, please complete
+                  your provider profile.
+                </p>
+                <div className="mt-4">
+                  <Link href="/dashboard/provider/profile">
+                    <Button>Complete profile</Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        );
+      }
+
+      const oRes = await api.get<{ data?: { orders?: Order[] } }>(
+        `/orders/provider/${provider.id}`,
+      );
+      const payload = (oRes as { data?: { orders?: Order[] } }).data ?? {};
+      const orders = Array.isArray(payload.orders) ? payload.orders : [];
+
+      const stats = {
+        incoming: orders.filter((o) => o.status === "PLACED").length,
+        preparing: orders.filter((o) => o.status === "PREPARING").length,
+        ready: orders.filter((o) => o.status === "READY").length,
+      };
 
   return (
     <div className="space-y-6">
@@ -89,14 +147,22 @@ export default async function page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recent.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell>{r.id}</TableCell>
-                    <TableCell>{r.customer}</TableCell>
-                    <TableCell>{r.total}</TableCell>
-                    <TableCell>{r.status}</TableCell>
+                {orders.length ? (
+                  orders.slice(0, 6).map((o) => (
+                    <TableRow key={o.id}>
+                      <TableCell>{o.id}</TableCell>
+                      <TableCell>{o.customerId ?? "Guest"}</TableCell>
+                      <TableCell>${o.total.toFixed(2)}</TableCell>
+                      <TableCell>{o.status}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-muted-foreground">
+                      No recent orders.
+                    </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
             <div className="flex justify-end mt-4">

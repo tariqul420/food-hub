@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import {
   Card,
   CardContent,
@@ -7,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import AddToCart from "../buttons/add-to-cart";
 
 interface MealCardProps {
   id: string;
@@ -15,6 +17,7 @@ interface MealCardProps {
   image?: string | null;
   price?: number | string;
   description?: string | null;
+  providerProfileId?: string;
 }
 
 export default function MealCard({
@@ -24,6 +27,7 @@ export default function MealCard({
   image,
   price,
   description,
+  providerProfileId,
 }: MealCardProps) {
   return (
     <Card className="overflow-hidden">
@@ -69,11 +73,14 @@ export default function MealCard({
       </CardContent>
 
       <CardFooter>
-        <div className="w-full">
-          <Button variant="outline" size="sm" className="w-full">
-            Add to cart
-          </Button>
-        </div>
+        <AddToCart
+          id={id}
+          title={title}
+          price={price}
+          image={image}
+          providerName={providerName}
+          providerProfileId={providerProfileId}
+        />
       </CardFooter>
     </Card>
   );

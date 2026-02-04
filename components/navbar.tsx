@@ -1,15 +1,21 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCart } from "@/hooks/use-cart";
 import { signOut, useSession } from "@/lib/auth/auth-client";
-import { Search } from "lucide-react";
+import { Search, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Navbar() {
   const session = useSession();
+  const getTotalItems = useCart(
+    (state: { getTotalItems: () => number }) => state.getTotalItems,
+  );
+  const cartItemCount = getTotalItems();
 
   const user = session?.data?.user;
   const avatarSrc = user?.image ?? "/images/avatar-placeholder.png";
@@ -56,13 +62,22 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {/* <Link
-            href="/cart"
-            aria-label="Cart"
-            className="rounded-md px-2 py-2 hover:bg-accent"
-          >
-            🧺
-          </Link> */}
+          {user && (
+            <Link
+              href="/dashboard/cart"
+              className="relative rounded-md p-2 hover:bg-accent"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {cartItemCount > 0 && (
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                >
+                  {cartItemCount}
+                </Badge>
+              )}
+            </Link>
+          )}
 
           {user ? (
             <>
