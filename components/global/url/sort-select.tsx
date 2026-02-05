@@ -21,7 +21,6 @@ export interface SortSelectProps {
   paramKey?: string;
   placeholder?: string;
   defaultValue?: string;
-  debounceMs?: number;
   replace?: boolean;
   className?: string;
   onValueChange?: (value: string) => void;
@@ -33,7 +32,7 @@ export default function SortSelect({
   paramKey = "sort",
   placeholder = "Default sorting",
   defaultValue = "",
-  debounceMs = 350,
+
   replace = true,
   className = "w-full md:w-48",
   onValueChange,
@@ -51,46 +50,35 @@ export default function SortSelect({
     setValue((prev) => (prev !== urlVal ? urlVal : prev));
   }, [searchParams, paramKey, defaultValue]);
 
-  // Debounced URL update
-  React.useEffect(() => {
-    const t = setTimeout(() => {
-      if (!searchParams) return;
+  const updateUrl = (v: string) => {
+    if (!searchParams) return;
 
-      const newUrl =
-        value && value !== defaultValue
-          ? formUrlQuery({
-              params: searchParams.toString(),
-              key: paramKey,
-              value,
-            })
-          : formUrlQuery({
-              params: searchParams.toString(),
-              key: paramKey,
-              value: null,
-            });
+    const newUrl =
+      v && v !== defaultValue
+        ? formUrlQuery({
+            params: searchParams.toString(),
+            key: paramKey,
+            value: v,
+          })
+        : formUrlQuery({
+            params: searchParams.toString(),
+            key: paramKey,
+            value: null,
+          });
 
-      if (replace) {
-        router.replace(newUrl, { scroll: false });
-      } else {
-        router.push(newUrl, { scroll: false });
-      }
+    if (replace) {
+      router.replace(newUrl, { scroll: false });
+    } else {
+      router.push(newUrl, { scroll: false });
+    }
 
-      onValueChange?.(value);
-    }, debounceMs);
+    onValueChange?.(v);
+  };
 
-    return () => clearTimeout(t);
-  }, [
-    value,
-    debounceMs,
-    replace,
-    router,
-    searchParams,
-    paramKey,
-    defaultValue,
-    onValueChange,
-  ]);
-
-  const handleChange = React.useCallback((v: string) => setValue(v), []);
+  const handleChange = (v: string) => {
+    setValue(v);
+    updateUrl(v);
+  };
 
   return (
     <div className="overflow-hidden rounded-md dark:bg-transparent">
@@ -99,11 +87,13 @@ export default function SortSelect({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {items.map((it) => (
-            <SelectItem key={it.value} value={it.value}>
-              {it.label}
-            </SelectItem>
-          ))}
+          {items
+            .filter((it) => it.value !== "")
+            .map((it) => (
+              <SelectItem key={it.value} value={it.value}>
+                {it.label}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
     </div>

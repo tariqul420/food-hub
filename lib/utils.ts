@@ -49,3 +49,31 @@ export function removeKeysFromQuery({
     { skipNull: true },
   );
 }
+
+type QSValue = string | undefined;
+
+export function setQuery(
+  prevQS: string,
+  pairs: Record<string, QSValue>,
+): string {
+  const s = new URLSearchParams(prevQS || "");
+  Object.entries(pairs).forEach(([k, v]) => {
+    if (v === undefined || v === "") s.delete(k);
+    else s.set(k, v);
+  });
+  return s.toString();
+}
+
+export function withPageReset(
+  pairs: Record<string, QSValue>,
+): Record<string, QSValue> {
+  return { ...pairs };
+}
+
+export function clearQuery(prevQS: string, keys: string[]): string {
+  const s = new URLSearchParams(prevQS || "");
+  keys.forEach((k) => {
+    s.delete(k);
+  });
+  return s.toString();
+}

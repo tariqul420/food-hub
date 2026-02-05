@@ -12,8 +12,10 @@ type Meal = {
 };
 
 export default async function Featured() {
-  const res = await api.get<{ data?: Meal[] }>("/meals");
-  const meals = (res as { data?: Meal[] }).data ?? [];
+  const meals = await api.get<{ data?: Meal[] }>("/meals", {
+    sort: "newest",
+    limit: 8,
+  });
 
   return (
     <section>
@@ -22,8 +24,8 @@ export default async function Featured() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-        {meals.length ? (
-          meals.map((m) => (
+        {meals.data?.length ? (
+          meals.data.map((m) => (
             <MealCard
               key={m.id}
               id={m.id}

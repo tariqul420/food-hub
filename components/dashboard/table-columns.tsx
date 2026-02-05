@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import AdminCategoryTableMenu from "@/features/category/components/admin-category-table-menu";
 import ProviderMealsTableMenu from "@/features/menu/components/provider-meals-table-menu";
 import OrderTableMenu from "@/features/order/components/order-table-menu";
+import AdminUserTableMenu from "@/features/user/components/admin-user-table-menu";
 import {
   AdminCategoryRecord,
   AdminUserRecord,
@@ -67,6 +68,11 @@ export const adminUserColumns: ColumnDef<AdminUserRecord>[] = [
         </Badge>
       </div>
     ),
+  },
+  {
+    id: "Actions",
+    header: "Actions",
+    cell: ({ row }) => <AdminUserTableMenu row={row} />,
   },
 ];
 

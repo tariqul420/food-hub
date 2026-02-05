@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import AddToCart from "../buttons/add-to-cart";
 
@@ -26,7 +20,6 @@ export default function MealCard({
   providerName,
   image,
   price,
-  description,
   providerProfileId,
 }: MealCardProps) {
   return (
@@ -66,13 +59,7 @@ export default function MealCard({
         </div>
       </CardHeader>
 
-      <CardContent>
-        <p className="text-sm text-muted-foreground line-clamp-3">
-          {description}
-        </p>
-      </CardContent>
-
-      <CardFooter>
+      <CardFooter className="pb-4">
         <AddToCart
           id={id}
           title={title}
