@@ -134,18 +134,49 @@ export const providerMealColumns: ColumnDef<ProviderMealRecord>[] = [
 ];
 
 // order columns for provider
-export const providerOrderColumns: ColumnDef<ProviderOrderRecord>[] = [
+export const getProviderOrderColumns = (
+  showEmail: boolean = false,
+): ColumnDef<ProviderOrderRecord>[] => [
   createSelectionColumn<ProviderOrderRecord>(),
   {
     accessorKey: "Customer Name",
     header: "Customer Name",
-    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => (
-      <h2 className="max-w-36 truncate text-sm font-medium">
-        {row.original.customer.name}
-      </h2>
-    ),
+    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => {
+      const customer = row.original.customer ?? {};
+      return (
+        <div>
+          <h2 className="max-w-36 truncate text-sm font-medium">
+            {customer.name}
+          </h2>
+          {showEmail && customer.email && (
+            <div className="text-xs text-muted-foreground truncate">
+              {customer.email}
+            </div>
+          )}
+        </div>
+      );
+    },
     filterFn: "includesString",
     enableHiding: false,
+  },
+  {
+    accessorKey: "Provider Name",
+    header: "Provider Name",
+    cell: ({ row }: { row: Row<ProviderOrderRecord> }) => {
+      const provider = row.original.provider ?? {};
+      return (
+        <div>
+          <h2 className="max-w-36 truncate text-sm font-medium">
+            {provider.name}
+          </h2>
+          {showEmail && provider.email && (
+            <div className="text-xs text-muted-foreground truncate">
+              {provider.email}
+            </div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "Total",

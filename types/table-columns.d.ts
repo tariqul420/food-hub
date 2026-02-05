@@ -24,6 +24,13 @@ type ProviderOrderRecord = BaseRecord & {
     name: string;
     email: string;
   };
+  provider: {
+    name: string;
+    email: string;
+  };
+  total: number;
+  currency: string;
+  status: string;
   deliveryAddress: string;
   total: number;
   status: string;

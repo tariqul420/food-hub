@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { useSession } from "@/lib/auth/auth-client";
 import api from "@/lib/fetcher";
 import getStatusIcon, {
   getStatusColorClass,
@@ -46,6 +47,7 @@ const fmt = (v: number | string) => {
 export default function OrderTableMenu({ row }: AdminOrderTableMenuProps) {
   const ord = row.original as any;
   const currency = typeof ord.currency === "string" ? ord.currency : "";
+  const { data: session } = useSession();
 
   const computedSubtotal: number = (ord.items ?? []).reduce(
     (acc: number, it: any) => {
@@ -162,6 +164,12 @@ Total: ${fmt(displayedTotal)}${currency}`;
                     {getStatusIcon(ord.status)}
                     {getStatusLabel(ord.status)}
                   </Badge>
+                  {(session?.user as any)?.role === "ADMIN" &&
+                    ord.provider?.name && (
+                      <Badge variant="outline" className="gap-1 px-2">
+                        Provider: {ord.provider.name}
+                      </Badge>
+                    )}
                 </div>
               </div>
 
@@ -176,33 +184,60 @@ Total: ${fmt(displayedTotal)}${currency}`;
 
           {/* Body */}
           <div className="px-6 py-5 space-y-6">
-            {/* Customer */}
-            <section className="space-y-3">
-              <div className="flex items-center gap-2">
-                <IconUser className="text-muted-foreground h-5 w-5" />
-                <h3 className="text-lg font-medium">Customer</h3>
-              </div>
-              <div className="grid gap-3 rounded-xl border p-4">
+            {/* Customer + Provider (responsive) */}
+            <div className="grid gap-3 md:grid-cols-2">
+              <section className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <IconUser className="text-muted-foreground h-4 w-4" />
-                  <span className="text-sm">
-                    {ord.customer?.name ?? ord.customerName}
-                  </span>
+                  <IconUser className="text-muted-foreground h-5 w-5" />
+                  <h3 className="text-lg font-medium">Customer</h3>
                 </div>
+                <div className="grid gap-3 rounded-xl border p-4">
+                  <div className="flex items-center gap-2">
+                    <IconUser className="text-muted-foreground h-4 w-4" />
+                    <span className="text-sm">
+                      {ord.customer?.name ?? ord.customerName}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <IconPhone className="text-muted-foreground h-4 w-4" />
+                    <span className="text-sm">
+                      {ord.customer?.email ?? ord.customerPhone ?? "-"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <IconMapPin className="text-muted-foreground h-4 w-4" />
+                    <span className="text-sm">
+                      {ord.deliveryAddress ?? ord.shippingAddress ?? "-"}
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              <section className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <IconPhone className="text-muted-foreground h-4 w-4" />
-                  <span className="text-sm">
-                    {ord.customer?.email ?? ord.customerPhone ?? "-"}
-                  </span>
+                  <IconUser className="text-muted-foreground h-5 w-5" />
+                  <h3 className="text-lg font-medium">Provider</h3>
                 </div>
-                <div className="flex items-center gap-2">
-                  <IconMapPin className="text-muted-foreground h-4 w-4" />
-                  <span className="text-sm">
-                    {ord.deliveryAddress ?? ord.shippingAddress ?? "-"}
-                  </span>
+                <div className="grid gap-3 rounded-xl border p-4">
+                  <div className="flex items-center gap-2">
+                    <IconUser className="text-muted-foreground h-4 w-4" />
+                    <span className="text-sm">{ord.provider?.name ?? "-"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <IconPhone className="text-muted-foreground h-4 w-4" />
+                    <span className="text-sm">
+                      {ord.provider?.email ?? ord.providerPhone ?? "-"}
+                    </span>
+                  </div>
+                  {ord.provider?.address && (
+                    <div className="flex items-center gap-2">
+                      <IconMapPin className="text-muted-foreground h-4 w-4" />
+                      <span className="text-sm">{ord.provider.address}</span>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </section>
+              </section>
+            </div>
 
             {/* Items (full width) */}
             <section className="space-y-3">
@@ -223,7 +258,7 @@ Total: ${fmt(displayedTotal)}${currency}`;
                 {ord.items?.length ? (
                   ord.items.map(
                     (it: (typeof ord.items)[number], idx: number) => {
-                      const thumb = it.image?.url ?? null;
+                      const thumb = it.meal.image ?? null;
 
                       return (
                         <div
