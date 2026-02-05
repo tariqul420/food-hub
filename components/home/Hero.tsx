@@ -34,7 +34,7 @@ export default function Hero() {
               <Link href="/meals">Browse meals</Link>
             </Button>
             <Button asChild>
-              <Link href="/provider/signup">Become a provider</Link>
+              <Link href="/register?role=PROVIDER">Become a provider</Link>
             </Button>
           </div>
 

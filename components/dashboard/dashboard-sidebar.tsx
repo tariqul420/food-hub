@@ -184,7 +184,7 @@ export function DashboardSidebar({ menu = [], user }: DashboardSidebarProps) {
                   <span className="relative">
                     <Avatar className="h-9 w-9">
                       <AvatarImage
-                        src={user?.image || "/assets/images/tariqul-islam.jpeg"}
+                        src={user?.image || "/assets/images/logo.png"}
                         alt={user?.name || "User"}
                         className="object-cover"
                       />

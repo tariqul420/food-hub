@@ -18,7 +18,7 @@ export default function Navbar() {
   const cartItemCount = getTotalItems();
 
   const user = session?.data?.user;
-  const avatarSrc = user?.image ?? "/images/avatar-placeholder.png";
+  const avatarSrc = user?.image ?? "/images/logo.png";
   const displayName = user?.name ?? user?.email ?? "User";
   const initial = displayName.charAt(0).toUpperCase();
 
@@ -110,7 +110,7 @@ export default function Navbar() {
                 </Button>
               </Link>
 
-              <Link href="/provider/signup">
+              <Link href="/register?role=PROVIDER">
                 <Button size="sm">Become a Provider</Button>
               </Link>
             </>

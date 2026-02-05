@@ -6,11 +6,18 @@ export const metadata: Metadata = {
   description: "Create a new account",
 };
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { role?: string | string[] };
+}) {
+  const { role } = (await searchParams) || {};
+  const defaultRole = role === "PROVIDER" ? "PROVIDER" : "CUSTOMER";
+
   return (
     <div className="flex w-full items-center justify-center min-h-screen p-4 md:p-0">
       <div className="w-full max-w-sm">
-        <SignupForm />
+        <SignupForm defaultRole={defaultRole} />
       </div>
     </div>
   );

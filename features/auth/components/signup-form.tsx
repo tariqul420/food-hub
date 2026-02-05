@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { InputField } from "@/components/fields/input-field";
+import SelectField from "@/components/fields/select-field";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,12 +37,21 @@ const formSchema = z.object({
       /[^A-Za-z0-9]/,
       "Password must contain at least one special character",
     ),
+  role: z.enum(["CUSTOMER", "PROVIDER"]).optional(),
 });
+
+export const roleOptions = [
+  { label: "Customer", value: "CUSTOMER" },
+  { label: "Provider", value: "PROVIDER" },
+];
+
+export type RoleType = "CUSTOMER" | "PROVIDER";
 
 export function SignupForm({
   className,
+  defaultRole = "CUSTOMER",
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { defaultRole?: RoleType }) {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,16 +60,22 @@ export function SignupForm({
       name: "",
       email: "",
       password: "",
+      role: defaultRole,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(
+    values: z.infer<typeof formSchema> & { role?: string },
+  ) {
     try {
-      const result = await signUp.email({
+      const payload = {
         name: values.name,
         email: values.email,
         password: values.password,
-      });
+        role: values.role as "CUSTOMER" | "PROVIDER",
+      } as any;
+
+      const result = await signUp.email(payload);
 
       if (result.error) {
         toast.error(result.error.message || "Signup failed");
@@ -68,7 +85,7 @@ export function SignupForm({
       toast.success("Account created successfully!");
       form.reset();
       router.push("/dashboard");
-      
+
       await new Promise((resolve) => setTimeout(resolve, 100));
       router.refresh();
     } catch (error) {
@@ -109,6 +126,18 @@ export function SignupForm({
                   label="Password"
                   type="password"
                 />
+                <div>
+                  <label className="mb-2 block text-sm font-medium">Role</label>
+                  <SelectField
+                    name="role"
+                    options={roleOptions.map((o) => ({
+                      label: o.label,
+                      value: o.value,
+                    }))}
+                    defaultValue={defaultRole}
+                    required
+                  />
+                </div>
                 <div className="flex flex-col gap-3">
                   <Button
                     type="submit"

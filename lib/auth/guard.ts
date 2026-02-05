@@ -86,7 +86,16 @@ export async function getProvider() {
   if (!session) return redirectToRole();
   if (session.user?.role !== "PROVIDER") return redirectToRole();
 
-  const res = await api.get<{ data?: ProviderProfile }>(`/providers/me`);
-
-  return res.data || null;
+  try {
+    const res = await api.get<{ data?: ProviderProfile }>(
+      `/providers/me`,
+      undefined,
+      {
+        throwOnError: false,
+      },
+    );
+    return res?.data || null;
+  } catch (err) {
+    return null;
+  }
 }
