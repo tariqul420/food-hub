@@ -1,4 +1,5 @@
 import AddToCart from "@/components/buttons/add-to-cart";
+import ContentContainer from "@/components/content-container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +11,13 @@ import {
 } from "@/components/ui/card";
 import api from "@/lib/fetcher";
 import Link from "next/link";
+type Review = {
+  id: string;
+  rating: number;
+  comment?: string | null;
+  createdAt: string;
+  customer?: { id: string; name?: string | null } | null;
+};
 
 interface MealDetail {
   id: string;
@@ -27,6 +35,16 @@ export default async function MealPage({ params }: { params: { id: string } }) {
   const res = await api.get<{ data?: MealDetail }>(`/meals/${id}`);
   const meal = (res as { data?: MealDetail }).data;
 
+  // fetch reviews for this meal
+  const reviewsRes = await api.get<{ data?: Review[] }>(`/reviews/meal/${id}`);
+  const reviews = (reviewsRes as { data?: Review[] }).data || [];
+  const avgRating = reviews.length
+    ? Math.round(
+        (reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length) *
+          10,
+      ) / 10
+    : null;
+
   if (!meal) {
     return (
       <div className="py-20 text-center text-muted-foreground">
@@ -39,25 +57,25 @@ export default async function MealPage({ params }: { params: { id: string } }) {
     <div className="py-10">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         <div className="md:col-span-2">
-          <div className="rounded-xl bg-muted h-72 flex items-center justify-center text-muted-foreground">
+          <div className="rounded-xl bg-muted flex items-center justify-center text-muted-foreground aspect-square w-full overflow-hidden max-h-[70vh]">
             {meal.image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={meal.image}
                 alt={meal.title}
-                className="h-full w-full object-cover"
+                className="w-full h-full object-cover"
+                style={{ maxHeight: "70vh" }}
               />
             ) : (
-              <div>Image</div>
+              <div className="text-muted-foreground">Image</div>
             )}
           </div>
 
           <Card className="mt-6">
             <CardContent>
-              <h2 className="text-lg font-semibold">About this meal</h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {meal.description}
-              </p>
+              <ContentContainer
+                content={meal.description || "No description provided."}
+              />
             </CardContent>
           </Card>
         </div>
@@ -74,6 +92,16 @@ export default async function MealPage({ params }: { params: { id: string } }) {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-xl font-semibold">${meal.price}</div>
+                  {reviews.length > 0 ? (
+                    <div className="text-sm text-muted-foreground mt-1">
+                      Rating: {avgRating} • {reviews.length} review
+                      {reviews.length > 1 ? "s" : ""}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground mt-1">
+                      No reviews yet
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-end">
                   <Badge className="mt-2">
@@ -101,6 +129,40 @@ export default async function MealPage({ params }: { params: { id: string } }) {
               </div>
             </CardContent>
           </Card>
+          {reviews.length > 0 && (
+            <Card className="mt-4">
+              <CardHeader>
+                <CardTitle>Reviews</CardTitle>
+                <CardDescription>
+                  {reviews.length} review{reviews.length > 1 ? "s" : ""}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {reviews.map((r) => (
+                    <div key={r.id} className="border-b pb-3">
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium">
+                          {r.customer?.name ?? "Anonymous"}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {r.rating} / 5
+                        </div>
+                      </div>
+                      {r.comment && (
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {r.comment}
+                        </p>
+                      )}
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {new Date(r.createdAt).toLocaleString()}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </aside>
       </div>
     </div>

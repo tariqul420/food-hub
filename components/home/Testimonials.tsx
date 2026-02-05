@@ -1,28 +1,50 @@
-import { Avatar } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import api from "@/lib/fetcher";
 
-const TESTIMONIALS = [
-  { id: 1, text: "Fast delivery and great taste!", author: "Ayesha" },
-  { id: 2, text: "Easy ordering and helpful providers.", author: "Rahim" },
-  { id: 3, text: "Great value and reliable delivery.", author: "Sohana" },
-];
+type RecentReview = {
+  id: string;
+  rating: number;
+  comment?: string | null;
+  createdAt: string;
+  customer?: { id: string; name?: string | null } | null;
+  meal?: { id: string; title?: string } | null;
+};
 
-export default function Testimonials() {
+export default async function Testimonials() {
+  const res = await api.get<{ data?: RecentReview[] }>(
+    "/reviews/recent?limit=3",
+  );
+  const reviews = (res as { data?: RecentReview[] }).data || [];
+
+  if (!reviews.length) {
+    return null;
+  }
+
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-semibold">Testimonials</h2>
+      <h2 className="mb-4 text-2xl font-semibold">Latest Reviews</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {TESTIMONIALS.map((t) => (
-          <Card key={t.id} className="p-4">
-            <div className="flex items-center gap-3">
-              <Avatar />
-              <div>
-                <blockquote className="text-sm">{t.text}</blockquote>
-                <div className="mt-2 text-sm font-medium text-muted-foreground">
-                  — {t.author}
-                </div>
-              </div>
-            </div>
+        {reviews.map((r) => (
+          <Card key={r.id} className="p-4">
+            <CardHeader className="p-0">
+              <CardTitle className="text-sm">
+                {r.customer?.name ?? "Anonymous"}
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {r.meal?.title ?? "Meal"} — {r.rating} / 5
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0 mt-2">
+              <p className="text-sm text-muted-foreground">
+                {r.comment ?? "No comment"}
+              </p>
+            </CardContent>
           </Card>
         ))}
       </div>

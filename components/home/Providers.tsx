@@ -1,14 +1,29 @@
-import { Avatar } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
+import ProviderCard from "@/components/cards/ProviderCard";
+import api from "@/lib/fetcher";
 import Link from "next/link";
 
-const PROVIDERS = [
-  { id: "p1", name: "Pizza Palace", cuisine: "Pizza" },
-  { id: "p2", name: "Burger Corner", cuisine: "Burgers" },
-  { id: "p3", name: "Sushi House", cuisine: "Sushi" },
-];
+export default async function Providers() {
+  const res = await api.get<{
+    data?: {
+      id: string;
+      name: string;
+      description?: string | null;
+      logo?: string | null;
+    }[];
+  }>("/providers", { limit: 6 });
 
-export default function Providers() {
+  const providers =
+    (
+      res as {
+        data?: {
+          id: string;
+          name: string;
+          description?: string | null;
+          logo?: string | null;
+        }[];
+      }
+    ).data ?? [];
+
   return (
     <section>
       <div className="mb-6 flex items-center justify-between">
@@ -22,23 +37,19 @@ export default function Providers() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {PROVIDERS.map((p) => (
-          <Card key={p.id} className="p-4">
-            <div className="flex items-center gap-3">
-              <Avatar size="lg" />
-              <div>
-                <div className="font-medium">{p.name}</div>
-                <div className="text-sm text-muted-foreground">{p.cuisine}</div>
-              </div>
-            </div>
-
-            <div className="mt-4 flex justify-end">
-              <Link href={`/providers/${p.id}`} className="text-sm">
-                View menu
-              </Link>
-            </div>
-          </Card>
-        ))}
+        {providers.length ? (
+          providers.map((p) => (
+            <ProviderCard
+              key={p.id}
+              id={p.id}
+              name={p.name}
+              description={p.description}
+              logo={p.logo}
+            />
+          ))
+        ) : (
+          <div className="text-muted-foreground">No providers found.</div>
+        )}
       </div>
     </section>
   );

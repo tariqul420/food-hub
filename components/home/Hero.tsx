@@ -1,13 +1,41 @@
 "use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import api from "@/lib/fetcher";
 import { BadgeCheck, CreditCard, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Hero() {
+  const [provider, setProvider] = useState<{
+    id: string;
+    name: string;
+    logo?: string | null;
+  } | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get<{
+          data?: { id: string; name: string; logo?: string | null }[];
+        }>("/providers", { limit: 1 });
+        const list =
+          (
+            res as {
+              data?: { id: string; name: string; logo?: string | null }[];
+            }
+          ).data || [];
+        if (list.length) setProvider(list[0]);
+      } catch {
+        // ignore
+      }
+    })();
+  }, []);
+
   return (
     <section className="rounded-2xl bg-linear-to-tr from-accent/5 to-primary/5 p-8 lg:p-12">
       <div className="max-w-7xl mx-auto grid gap-8 lg:grid-cols-2 lg:items-center">
@@ -65,21 +93,32 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="absolute -left-8 -bottom-6">
+            <Link
+              href={`/providers/${provider?.id ?? ""}`}
+              className="absolute -left-8 -bottom-6"
+            >
               <Card className="w-72">
                 <CardContent>
                   <div className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage
-                        src="/images/provider-placeholder.png"
-                        alt="P"
-                      />
-                      <AvatarFallback>P</AvatarFallback>
+                      {provider?.logo ? (
+                        <AvatarImage src={provider.logo} alt={provider.name} />
+                      ) : (
+                        <AvatarImage
+                          src="/images/provider-placeholder.png"
+                          alt={provider?.name ?? "P"}
+                        />
+                      )}
+                      <AvatarFallback>
+                        {provider?.name?.charAt(0) ?? "P"}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-semibold">Pizza Palace</div>
+                      <div className="font-semibold">
+                        {provider?.name ?? "Popular provider"}
+                      </div>
                       <div className="text-sm text-muted-foreground">
-                        Pizza • 4.7
+                        Provider • Rating
                       </div>
                     </div>
                   </div>
@@ -91,7 +130,7 @@ export default function Hero() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
+            </Link>
 
             <div className="absolute right-0 -top-6">
               <Card className="w-56">

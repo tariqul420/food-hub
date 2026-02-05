@@ -30,8 +30,8 @@ export default function MealCard({
   providerProfileId,
 }: MealCardProps) {
   return (
-    <Card className="overflow-hidden">
-      <div className="h-44 w-full bg-muted flex items-center justify-center text-muted-foreground">
+    <Card className="overflow-hidden py-0">
+      <div className="h-44 w-full bg-muted flex items-center justify-center text-muted-foreground rounded-t-xl overflow-hidden">
         <Link href={`/meals/${id}`} className="block w-full h-full">
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element

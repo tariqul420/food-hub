@@ -1,5 +1,6 @@
 "use client";
 
+import ReviewModal from "@/components/review/review-modal";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/fetcher";
@@ -37,21 +38,28 @@ type ApiResponse = {
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [currentMeal, setCurrentMeal] = useState<{
+    id: string;
+    title?: string;
+  } | null>(null);
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get<ApiResponse>("/orders");
+      setOrders(response.data || []);
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
+      toast.error("Failed to load orders");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await api.get<ApiResponse>("/orders");
-        setOrders(response.data || []);
-      } catch (error) {
-        console.error("Failed to fetch orders:", error);
-        toast.error("Failed to load orders");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getStatusColor = (status: string) => {
@@ -135,7 +143,23 @@ export default function OrdersPage() {
                       <span>
                         {item.meal?.title || "Unknown Meal"} × {item.quantity}
                       </span>
-                      <span>${item.subtotal.toFixed(2)}</span>
+                      <div className="flex items-center gap-2">
+                        <span>${item.subtotal.toFixed(2)}</span>
+                        {item.meal?.id && (
+                          <button
+                            className="text-sm text-primary underline"
+                            onClick={() => {
+                              setCurrentMeal({
+                                id: item.meal?.id ?? item.id,
+                                title: item.meal?.title,
+                              });
+                              setReviewOpen(true);
+                            }}
+                          >
+                            Leave review
+                          </button>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -157,6 +181,18 @@ export default function OrdersPage() {
           </Card>
         ))}
       </div>
+      {currentMeal && (
+        <ReviewModal
+          mealId={currentMeal.id}
+          mealTitle={currentMeal.title}
+          open={reviewOpen}
+          onOpenChange={(o) => setReviewOpen(o)}
+          onSuccess={() => {
+            // refresh orders to reflect review availability/status
+            fetchOrders();
+          }}
+        />
+      )}
     </div>
   );
 }

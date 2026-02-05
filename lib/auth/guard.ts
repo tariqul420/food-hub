@@ -95,7 +95,7 @@ export async function getProvider() {
       },
     );
     return res?.data || null;
-  } catch (err) {
+  } catch {
     return null;
   }
 }
