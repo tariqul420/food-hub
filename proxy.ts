@@ -6,19 +6,6 @@ export async function proxy(req: NextRequest) {
   const user = await getSessionData();
   const authed = !!user;
 
-  // lightweight debug logging to help track cookie behavior in production
-  try {
-    const cookieHeader = req.headers.get("cookie");
-    console.log(
-      "[middleware][proxy] path=",
-      pathname,
-      "cookie=",
-      cookieHeader?.slice(0, 200),
-    );
-  } catch {
-    // ignore logging errors
-  }
-
   if (pathname === "/login" || pathname === "/signup") {
     if (authed) {
       const res = NextResponse.redirect(new URL("/dashboard", req.url));
