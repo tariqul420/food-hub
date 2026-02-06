@@ -1,41 +1,31 @@
+import { cookies } from "next/dist/server/request/cookies";
 import { api } from "../fetcher";
 
 const BASE =
   process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "https://foodhub-b.vercel.app";
 
-async function fetchSessionFromEndpoint(ep: string) {
+export async function getSession() {
   try {
-    const hdrsModule = await import("next/headers");
-    const headersFn = (hdrsModule as unknown as { headers?: unknown }).headers;
-    const entries =
-      typeof headersFn === "function" ? await headersFn() : headersFn;
-    const hdrs = Object.fromEntries(
-      (entries as Iterable<readonly [string, string]>) || [],
-    );
-
-    const res = await fetch(`${BASE}${ep}`, {
-      headers: hdrs,
+    const cookieStore = await cookies();
+    const res = await fetch(`${BASE}/api/auth/get-session`, {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
       cache: "no-store",
     });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
+    const session = await res.json();
+    if (session === null) {
+      return { data: null, message: "No active session", status: false };
+    }
+    return { data: session, error: null, status: true };
+  } catch (error) {
+    console.log(error);
+    return {
+      data: null,
+      message: "Failed to fetch session data",
+      status: false,
+    };
   }
-}
-
-export async function getSession() {
-  const endpoints = ["/api/auth/get-session"];
-
-  for (const ep of endpoints) {
-    const payload = await fetchSessionFromEndpoint(ep);
-    if (!payload) continue;
-
-    if (payload.session || payload.user || payload.data) return payload;
-    if (typeof payload === "object") return { user: payload };
-  }
-
-  return null;
 }
 
 export async function redirectToRole() {
@@ -43,7 +33,7 @@ export async function redirectToRole() {
   const { redirect } = await import("next/navigation");
   if (!session) return redirect("/login");
 
-  const role = session.user?.role;
+  const role = session.data?.user?.role;
   if (role === "ADMIN") return redirect("/dashboard/admin");
   if (role === "PROVIDER") return redirect("/dashboard/provider");
 
@@ -53,28 +43,28 @@ export async function redirectToRole() {
 export async function requireAdmin() {
   const session = await getSession();
   if (!session) return redirectToRole();
-  if (session.user?.role !== "ADMIN") return redirectToRole();
-  return session.user;
+  if (session.data?.user?.role !== "ADMIN") return redirectToRole();
+  return session.data.user;
 }
 
 export async function requireProvider() {
   const session = await getSession();
   if (!session) return redirectToRole();
-  if (session.user?.role !== "PROVIDER") return redirectToRole();
-  return session.user;
+  if (session.data?.user?.role !== "PROVIDER") return redirectToRole();
+  return session.data.user;
 }
 
 export async function requireCustomer() {
   const session = await getSession();
   if (!session) return redirectToRole();
-  if (session.user?.role !== "CUSTOMER") return redirectToRole();
-  return session.user;
+  if (session.data?.user?.role !== "CUSTOMER") return redirectToRole();
+  return session.data.user;
 }
 
 export async function getUser() {
   const session = await getSession();
   if (!session) return redirectToRole();
-  return session.user;
+  return session.data.user;
 }
 
 export async function getProvider() {
@@ -85,7 +75,7 @@ export async function getProvider() {
 
   const session = await getSession();
   if (!session) return redirectToRole();
-  if (session.user?.role !== "PROVIDER") return redirectToRole();
+  if (session.data?.user?.role !== "PROVIDER") return redirectToRole();
 
   try {
     const res = await api.get<{ data?: ProviderProfile }>(
