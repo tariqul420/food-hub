@@ -1,6 +1,7 @@
 import { api } from "../fetcher";
 
-const BASE = process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:4000";
+const BASE =
+  process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "https://foodhub-b.vercel.app";
 
 async function fetchSessionFromEndpoint(ep: string) {
   try {
