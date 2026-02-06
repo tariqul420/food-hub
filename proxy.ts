@@ -6,14 +6,33 @@ export async function proxy(req: NextRequest) {
   const user = await getSessionData();
   const authed = !!user;
 
+  // lightweight debug logging to help track cookie behavior in production
+  try {
+    const cookieHeader = req.headers.get("cookie");
+    console.log(
+      "[middleware][proxy] path=",
+      pathname,
+      "cookie=",
+      cookieHeader?.slice(0, 200),
+    );
+  } catch {
+    // ignore logging errors
+  }
+
   if (pathname === "/login" || pathname === "/signup") {
-    if (authed) return NextResponse.redirect(new URL("/dashboard", req.url));
+    if (authed) {
+      const res = NextResponse.redirect(new URL("/dashboard", req.url));
+      res.headers.set("x-middleware-debug", "redirect-to-dashboard");
+      return res;
+    }
     return NextResponse.next();
   }
 
   if (pathname.startsWith("/dashboard") && !authed) {
     const next = encodeURIComponent(pathname + (search || ""));
-    return NextResponse.redirect(new URL(`/login?next=${next}`, req.url));
+    const res = NextResponse.redirect(new URL(`/login?next=${next}`, req.url));
+    res.headers.set("x-middleware-debug", "redirect-to-login");
+    return res;
   }
 
   return NextResponse.next();
