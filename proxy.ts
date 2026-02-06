@@ -1,18 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getSession } from "./lib/auth/guard";
-
-// function isAuthenticated(req: NextRequest) {
-//   const secure = req.cookies.get("__Secure-better-auth.session_token")?.value;
-//   const normal = req.cookies.get("better-auth.session_token")?.value;
-//   const token = secure || normal;
-
-//   return Boolean(token);
-// }
+import { getUser } from "./lib/auth/guard";
 
 export async function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
-  const { data } = await getSession();
-  const user = data?.user;
+  const user = await getUser();
   const authed = !!user;
 
   if (pathname === "/login" || pathname === "/signup") {
