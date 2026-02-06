@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getUser } from "./lib/auth/guard";
+import { getSessionData } from "./lib/auth/guard";
 
 export async function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
-  const user = await getUser();
+  const user = await getSessionData();
   const authed = !!user;
 
   if (pathname === "/login" || pathname === "/signup") {

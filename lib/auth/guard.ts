@@ -64,6 +64,11 @@ export async function getUser() {
   return session.data.user;
 }
 
+export async function getSessionData() {
+  const session = await getSession();
+  return session?.data ?? null;
+}
+
 export async function getProvider() {
   interface ProviderProfile {
     id: string;
