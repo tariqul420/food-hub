@@ -8,9 +8,7 @@ export async function proxy(req: NextRequest) {
 
   if (pathname === "/login" || pathname === "/signup") {
     if (authed) {
-      const res = NextResponse.redirect(new URL("/dashboard", req.url));
-      res.headers.set("x-middleware-debug", "redirect-to-dashboard");
-      return res;
+      return NextResponse.redirect(new URL("/dashboard", req.url));
     }
     return NextResponse.next();
   }
@@ -18,7 +16,6 @@ export async function proxy(req: NextRequest) {
   if (pathname.startsWith("/dashboard") && !authed) {
     const next = encodeURIComponent(pathname + (search || ""));
     const res = NextResponse.redirect(new URL(`/login?next=${next}`, req.url));
-    res.headers.set("x-middleware-debug", "redirect-to-login");
     return res;
   }
 

@@ -7,42 +7,45 @@ type Options = Omit<RequestInit, "body"> & {
   json?: unknown;
   throwOnError?: boolean;
   headers?: HeadersInit;
+  /**
+   * Cookie/session required কিনা (SSR এ cookie না থাকলে 401 throw করবে)
+   */
   auth?: "required" | "optional";
 };
 
 function buildUrl(path: string, params?: Params) {
   const isAbsolute = /^https?:\/\//i.test(path);
+  const base = env.api_url.endsWith("/") ? env.api_url : env.api_url + "/";
   const url = isAbsolute
     ? new URL(path)
-    : new URL(
-        path.startsWith("/") ? path.slice(1) : path,
-        env.api_url.endsWith("/") ? env.api_url : env.api_url + "/",
-      );
+    : new URL(path.startsWith("/") ? path.slice(1) : path, base);
 
   if (params) {
-    Object.entries(params).forEach(([k, v]) => {
+    for (const [k, v] of Object.entries(params)) {
       if (v !== undefined && v !== null) url.searchParams.set(k, String(v));
-    });
+    }
   }
   return url.toString();
 }
 
-async function getIncomingHeaders(): Promise<Record<string, string>> {
-  if (typeof window !== "undefined") return {};
+/**
+ * Server-side (Next.js App Router) incoming cookie header read
+ */
+async function getIncomingCookieHeader(): Promise<string> {
+  if (typeof window !== "undefined") return "";
   try {
-    const mod = await import("next/headers");
-    const hdrsExport = (mod as { headers?: unknown }).headers;
-    const hdrs =
-      typeof hdrsExport === "function"
-        ? await (hdrsExport as () => Iterable<readonly [string, string]>)()
-        : (hdrsExport as Iterable<readonly [string, string]> | undefined);
-    const out: Record<string, string> = {};
-    if (!hdrs) return out;
-    for (const [k, v] of hdrs) out[k] = v;
-    return out;
+    const { headers } = await import("next/headers");
+    // App Router: headers() returns ReadonlyHeaders (sync)
+    return (await headers()).get("cookie") ?? "";
   } catch {
-    return {};
+    return "";
   }
+}
+
+function hasAnySessionCookie(cookieHeader: string) {
+  // Better Auth cookie name (common): better-auth.session_token
+  // আপনার config এ নাম আলাদা হলে এখানে update করবেন
+  return /(?:^|;\s*)better-auth\.session_token=/.test(cookieHeader);
 }
 
 async function request<T = unknown>(
@@ -51,40 +54,45 @@ async function request<T = unknown>(
   method?: string,
 ): Promise<T> {
   const { params, json, throwOnError = true, headers, auth, ...init } = opts;
-  const fullUrl = buildUrl(path, params);
 
+  const fullUrl = buildUrl(path, params);
   const finalHeaders = new Headers(headers || {});
 
-  const incoming = await getIncomingHeaders();
-  for (const [k, v] of Object.entries(incoming)) {
-    if (!finalHeaders.get(k)) finalHeaders.set(k, String(v));
+  // Always set accept
+  if (!finalHeaders.get("accept"))
+    finalHeaders.set("accept", "application/json");
+
+  // ✅ Server-side: forward incoming cookies to backend
+  const cookieHeader = await getIncomingCookieHeader();
+  if (cookieHeader && !finalHeaders.get("cookie")) {
+    finalHeaders.set("cookie", cookieHeader);
   }
 
-  let token: string | undefined;
-  if (typeof window === "undefined") {
-    if (incoming.cookie) {
-      const m = incoming.cookie.match(/(?:^|; )token=([^;]*)/);
-      if (m) token = decodeURIComponent(m[1]);
+  // Optional auth guard for SSR
+  if (auth === "required") {
+    const hasCookie =
+      typeof window !== "undefined"
+        ? /(?:^|;\s*)better-auth\.session_token=/.test(document.cookie || "")
+        : hasAnySessionCookie(cookieHeader);
+
+    if (!hasCookie) {
+      const err = new Error("Unauthorized") as Error & { status?: number };
+      err.status = 401;
+      throw err;
     }
-  } else {
-    const cookie = typeof document !== "undefined" ? document.cookie : "";
-    const m = cookie ? cookie.match(/(?:^|; )token=([^;]*)/) : null;
-    if (m) token = decodeURIComponent(m[1]);
-  }
-
-  if (token) finalHeaders.set("authorization", `Bearer ${token}`);
-  else if (auth === "required") {
-    const err = new Error("Unauthorized") as Error & { status?: number };
-    err.status = 401;
-    throw err;
   }
 
   const initReq: RequestInit = {
     method: method ?? (init.method as string) ?? (json ? "POST" : "GET"),
     headers: finalHeaders,
-    ...(typeof window !== "undefined"
-      ? { credentials: "include" as RequestCredentials }
-      : {}),
+
+    /**
+     * ✅ Important:
+     * Client-side: credentials include লাগবে cookie send করতে
+     * Server-side: fetch এ cookie jar নেই, তাই আমরা header দিয়ে cookie forward করছি
+     */
+    credentials: "include",
+
     ...init,
   };
 
@@ -93,14 +101,20 @@ async function request<T = unknown>(
     initReq.method &&
     !["GET", "HEAD"].includes(initReq.method)
   ) {
-    if (!finalHeaders.get("content-type"))
+    if (!finalHeaders.get("content-type")) {
       finalHeaders.set("content-type", "application/json");
+    }
     initReq.body = JSON.stringify(json);
   }
 
   const res = await fetch(fullUrl, initReq);
+
+  // If backend returns 204
+  if (res.status === 204) return null as T;
+
   const text = await res.text();
   let data: unknown = text || null;
+
   try {
     data = text ? JSON.parse(text) : null;
   } catch {
