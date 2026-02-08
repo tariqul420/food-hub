@@ -10,7 +10,7 @@ export default async function Providers() {
       description?: string | null;
       logo?: string | null;
     }[];
-  }>("/providers", { limit: 6 });
+  }>("/v1/providers", { limit: 6 });
 
   const providers =
     (

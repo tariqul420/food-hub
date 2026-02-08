@@ -32,11 +32,13 @@ interface MealDetail {
 export default async function MealPage({ params }: { params: { id: string } }) {
   const { id } = await params;
 
-  const res = await api.get<{ data?: MealDetail }>(`/meals/${id}`);
+  const res = await api.get<{ data?: MealDetail }>(`/v1/meals/${id}`);
   const meal = (res as { data?: MealDetail }).data;
 
   // fetch reviews for this meal
-  const reviewsRes = await api.get<{ data?: Review[] }>(`/reviews/meal/${id}`);
+  const reviewsRes = await api.get<{ data?: Review[] }>(
+    `/v1/reviews/meal/${id}`,
+  );
   const reviews = (reviewsRes as { data?: Review[] }).data || [];
   const avgRating = reviews.length
     ? Math.round(

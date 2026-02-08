@@ -10,7 +10,7 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
        const provider = await getProvider();
 
   const res = await api.get<DataResponse<{ orders?: ProviderOrderRecord[] }>>(
-    `/orders/provider/${provider?.id}`,
+    `/v1/orders/provider/${provider?.id}`,
     {
       limit: Number(pageSize || 25),
       page: Number(pageIndex || 1),

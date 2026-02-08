@@ -11,7 +11,7 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
 
   const res = await api.get<
     DataResponse<{ categories?: AdminCategoryRecord[] }>
-  >("/categories/admin", {
+  >("/v1/categories/admin", {
     limit: Number(pageSize || 25),
     page: Number(pageIndex || 1),
     search: search?.trim(),

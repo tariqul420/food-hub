@@ -31,7 +31,7 @@ export default function StatusChangeSelect({
     if (!newStatus) return toast.error("Invalid status");
     if (!orderId) return toast.error("Order ID is missing");
 
-    toast.promise(api.patch(`/orders/${orderId}`, { status: newStatus }), {
+    toast.promise(api.patch(`/v1/orders/${orderId}`, { status: newStatus }), {
       loading: "Updating order status...",
       success: () => {
         router.refresh();

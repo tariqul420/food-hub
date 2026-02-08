@@ -61,7 +61,7 @@ export default function AdminCategoryTableMenu({
       }
 
       await toast.promise(
-        api.put(`/categories/${row.original.id}`, { name: data.name }),
+        api.put(`/v1/categories/${row.original.id}`, { name: data.name }),
         {
           loading: "Saving information...",
           success: () => {
@@ -87,7 +87,7 @@ export default function AdminCategoryTableMenu({
         throw new Error("Category ID is required");
       }
 
-      await toast.promise(api.del(`/categories/${row.original.id}`), {
+      await toast.promise(api.del(`/v1/categories/${row.original.id}`), {
         loading: "Deleting category...",
         success: () => {
           setIsDeleteDialogOpen(false);

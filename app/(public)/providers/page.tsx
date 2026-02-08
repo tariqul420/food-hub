@@ -18,7 +18,7 @@ export default async function ProvidersPage({
 }) {
   const { search, sort, page } = await searchParams;
 
-  const res = await api.get<{ data?: ProviderItem[] }>("/providers", {
+  const res = await api.get<{ data?: ProviderItem[] }>("/v1/providers", {
     search,
     sort,
     page,

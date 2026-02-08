@@ -66,7 +66,7 @@ export default async function page() {
   }
 
   const res = await api.get<{ data?: { orders?: Order[] } }>(
-    `/orders/provider/${provider.id}`,
+    `/v1/orders/provider/${provider.id}`,
   );
 
   const stats = {

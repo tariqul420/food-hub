@@ -8,7 +8,7 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
   const { pageSize, pageIndex, search } = (await searchParams) || {};
 
   const res = await api.get<DataResponse<{ orders?: ProviderOrderRecord[] }>>(
-    `/orders/admin`,
+    `/v1/orders/admin`,
     {
       limit: Number(pageSize || 25),
       page: Number(pageIndex || 1),

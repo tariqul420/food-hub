@@ -18,7 +18,7 @@ type RecentReview = {
 
 export default async function Testimonials() {
   const res = await api.get<{ data?: RecentReview[] }>(
-    "/reviews/recent?limit=3",
+    "/v1/reviews/recent?limit=3",
   );
   const reviews = (res as { data?: RecentReview[] }).data || [];
 

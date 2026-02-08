@@ -36,7 +36,7 @@ export default function CategoryForm({
     };
 
     if (category) {
-      toast.promise(api.put(`/categories/${category.id}`, transformedValues), {
+      toast.promise(api.put(`/v1/categories/${category.id}`, transformedValues), {
         loading: "Updating category...",
         success: (updatedCategory: unknown) => {
           const uc = updatedCategory as { id: string };
@@ -51,7 +51,7 @@ export default function CategoryForm({
         },
       });
     } else {
-      toast.promise(api.post("/categories", transformedValues), {
+      toast.promise(api.post("/v1/categories", transformedValues), {
         loading: "Creating category...",
         success: () => {
           router.refresh();

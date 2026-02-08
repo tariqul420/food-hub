@@ -12,7 +12,7 @@ type Meal = {
 };
 
 export default async function Featured() {
-  const meals = await api.get<{ data?: Meal[] }>("/meals", {
+  const meals = await api.get<{ data?: Meal[] }>("/v1/meals", {
     sort: "newest",
     limit: 8,
   });

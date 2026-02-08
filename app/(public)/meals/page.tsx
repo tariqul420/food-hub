@@ -61,12 +61,12 @@ export default async function MealsPage({
   const currentQS = qsFromSearchParams({ search, page, sort, category });
 
   const [meals, categories] = await Promise.all([
-    api.get<{ data?: MealItem[] }>("/meals", {
+    api.get<{ data?: MealItem[] }>("/v1/meals", {
       search,
       sort,
       page,
     }),
-    api.get<{ data?: { id: string; name: string }[] }>("/categories"),
+    api.get<{ data?: { id: string; name: string }[] }>("/v1/categories"),
   ]);
 
   const hasCategories =

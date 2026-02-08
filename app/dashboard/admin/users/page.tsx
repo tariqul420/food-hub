@@ -9,7 +9,7 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
   const { pageSize, pageIndex, search } = (await searchParams) || {};
 
   const res = await api.get<DataResponse<{ users?: AdminUserRecord[] }>>(
-    "/users/admin",
+    "/v1/users/admin",
     {
       limit: Number(pageSize || 25),
       page: Number(pageIndex || 1),

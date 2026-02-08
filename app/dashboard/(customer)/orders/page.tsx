@@ -47,7 +47,7 @@ export default function OrdersPage() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await api.get<ApiResponse>("/orders");
+      const response = await api.get<ApiResponse>("/v1/orders");
       setOrders(response.data || []);
     } catch (error) {
       console.error("Failed to fetch orders:", error);
@@ -59,7 +59,6 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getStatusColor = (status: string) => {

@@ -47,7 +47,7 @@ export default function ReviewModal({
     if (!mealId) return toast.error("Invalid meal");
     setSubmitting(true);
     try {
-      await api.post("/reviews", {
+      await api.post("/v1/reviews", {
         mealId,
         rating: values.rating,
         comment: values.comment,

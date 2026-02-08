@@ -22,7 +22,7 @@ export default function Hero() {
       try {
         const res = await api.get<{
           data?: { id: string; name: string; logo?: string | null }[];
-        }>("/providers", { limit: 1 });
+        }>("/v1/providers", { limit: 1 });
         const list =
           (
             res as {

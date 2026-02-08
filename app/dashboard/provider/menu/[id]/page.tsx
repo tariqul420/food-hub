@@ -16,7 +16,7 @@ interface MealData {
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = await params;
 
-  const res = await api.get<{ data?: MealData }>(`/meals/${id}`);
+  const res = await api.get<{ data?: MealData }>(`/v1/meals/${id}`);
 
   return (
     <Card>

@@ -81,7 +81,7 @@ export async function getProvider() {
 
   try {
     const res = await api.get<{ data?: ProviderProfile }>(
-      `/providers/me`,
+      `/v1/providers/me`,
       undefined,
       {
         throwOnError: false,

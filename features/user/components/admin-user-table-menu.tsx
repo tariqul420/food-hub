@@ -72,7 +72,7 @@ export default function AdminUserTableMenu({
       if (isSelf) return toast.error("You cannot change your own role");
 
       await toast.promise(
-        api.patch(`/users/admin/${row.original.id}`, { role: data.role }),
+        api.patch(`/v1/users/admin/${row.original.id}`, { role: data.role }),
         {
           loading: "Saving user role...",
           success: () => {

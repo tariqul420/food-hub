@@ -19,7 +19,9 @@ export default async function page() {
   await getUser();
 
   try {
-    const res = await api.get<{ data?: Provider } | Provider>("/providers/me");
+    const res = await api.get<{ data?: Provider } | Provider>(
+      "/v1/providers/me",
+    );
     const provider = (res as { data?: Provider } | Provider).hasOwnProperty(
       "data",
     )

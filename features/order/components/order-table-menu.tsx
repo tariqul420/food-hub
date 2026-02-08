@@ -73,7 +73,7 @@ export default function OrderTableMenu({ row }: AdminOrderTableMenuProps) {
   const handleDelete = async () => {
     if (!ord.id) return toast.error("Order ID is missing");
 
-    toast.promise(api.del(`/orders/${ord.id}`), {
+    toast.promise(api.del(`/v1/orders/${ord.id}`), {
       loading: "Deleting order...",
       success: () => {
         return "Order deleted successfully";

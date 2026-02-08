@@ -42,7 +42,7 @@ export default async function page() {
   // Fetch real orders data
   let orders: Order[] = [];
   try {
-    const response = await api.get<ApiResponse>("/orders", {
+    const response = await api.get<ApiResponse>("/v1/orders", {
       customerId: user?.id,
     });
     orders = response.data || [];

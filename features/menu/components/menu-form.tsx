@@ -120,7 +120,7 @@ export default function MenuForm({ menu }: MenuFormProps) {
     };
 
     if (menu) {
-      toast.promise(api.put(`/meals/${menu.id}`, payload), {
+      toast.promise(api.put(`/v1/meals/${menu.id}`, payload), {
         loading: "Updating menu item...",
         success: () => {
           router.refresh();
@@ -129,7 +129,7 @@ export default function MenuForm({ menu }: MenuFormProps) {
         error: () => "Failed to update menu item.",
       });
     } else {
-      toast.promise(api.post("/meals", payload), {
+      toast.promise(api.post("/v1/meals", payload), {
         loading: "Creating menu item...",
         success: () => {
           router.refresh();
@@ -147,7 +147,7 @@ export default function MenuForm({ menu }: MenuFormProps) {
     const fetchCategory = async () => {
       try {
         const res = await api.get<{ data?: Category[] } | Category[]>(
-          "/categories",
+          "/v1/categories",
         );
         const cats = (res as { data?: Category[] }).data ?? (res as Category[]);
         if (!cats || !Array.isArray(cats)) return;

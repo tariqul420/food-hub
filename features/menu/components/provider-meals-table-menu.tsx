@@ -34,7 +34,7 @@ export default function ProviderMealsTableMenu({
 
   async function HandleDeleteProduct() {
     try {
-      toast.promise(api.del(`/meals/${row.original.id}`), {
+      toast.promise(api.del(`/v1/meals/${row.original.id}`), {
         loading: "Deleting product...",
         success: () => {
           setIsDialogOpen(false);

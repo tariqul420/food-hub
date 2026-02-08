@@ -11,7 +11,7 @@ export default async function Page({ searchParams }: DashboardSearchParams) {
   const user = await getUser();
 
   const res = await api.get<DataResponse<{ meals?: ProviderMealRecord[] }>>(
-    `/meals/provider/${user?.id}`,
+    `/v1/meals/provider/${user?.id}`,
     {
       limit: Number(pageSize || 25),
       page: Number(pageIndex || 1),

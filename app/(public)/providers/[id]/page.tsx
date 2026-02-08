@@ -23,7 +23,7 @@ export default async function ProviderPage({
 }) {
   const { id } = await params;
 
-  const res = await api.get<{ data?: ProviderDetail }>(`/providers/${id}`);
+  const res = await api.get<{ data?: ProviderDetail }>(`/v1/providers/${id}`);
   const provider = (res as { data?: ProviderDetail }).data;
 
   if (!provider) {

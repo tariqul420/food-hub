@@ -86,7 +86,7 @@ export default function CheckoutPage() {
             providerProfileId: providerId !== "unknown" ? providerId : null,
           };
 
-          return api.post("/orders", orderData);
+          return api.post("/v1/orders", orderData);
         },
       );
 
