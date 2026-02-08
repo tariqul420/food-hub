@@ -3,7 +3,9 @@ export const env = {
     url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   },
   api: {
-    url: process.env.NEXT_PUBLIC_API_URL || "https://foodhub-b.vercel.app/api",
+    url:
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://food-hub-backend-ykcc.onrender.com/api",
   },
   node_env: process.env.NODE_ENV || "development",
   isDev: process.env.NODE_ENV === "development",
