@@ -13,11 +13,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/auth/:path*",
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/auth/:path*`,
+        destination: `https://food-hub-backend-ykcc.onrender.com/auth/:path*`,
       },
       {
         source: "/api/v1/:path*",
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/v1/:path*`,
+        destination: `https://food-hub-backend-ykcc.onrender.com/v1/:path*`,
       },
     ];
   },
