@@ -1,0 +1,47 @@
+services:
+  app:
+    container_name: food-hub
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_BETTER_AUTH_URL: ${NEXT_PUBLIC_BETTER_AUTH_URL}
+        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
+
+    env_file: .env
+
+    expose:
+      - "3009"
+
+    restart: unless-stopped
+
+    networks:
+      - proxy
+      - appnet
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.food-hub.rule=Host(`foodhub.tariqul.dev`)"
+      - "traefik.http.routers.food-hub.entrypoints=websecure"
+      - "traefik.http.routers.food-hub.tls=true"
+      - "traefik.http.routers.food-hub.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.food-hub.service=food-hub-svc"
+      - "traefik.http.services.food-hub-svc.loadbalancer.server.port=3009"
+      - "traefik.http.services.food-hub-svc.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.food-hub-www.rule=Host(`www.foodhub.tariqul.dev`)"
+      - "traefik.http.routers.food-hub-www.entrypoints=websecure"
+      - "traefik.http.routers.food-hub-www.tls=true"
+      - "traefik.http.routers.food-hub-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.food-hub-www.middlewares=food-hub-redirect@docker"
+      - "traefik.http.middlewares.food-hub-redirect.redirectregex.regex=^https?://www\\.foodhub\\.tariqul\\.dev/(.*)"
+      - "traefik.http.middlewares.food-hub-redirect.redirectregex.replacement=https://foodhub.tariqul.dev/$${1}"
+      - "traefik.http.middlewares.food-hub-redirect.redirectregex.permanent=true"
+      
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
