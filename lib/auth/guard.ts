@@ -4,8 +4,7 @@ import { cookies } from "next/headers";
 import { api } from "../fetcher";
 
 const BASE =
-  process.env.NEXT_PUBLIC_BETTER_AUTH_URL ||
-  "https://food-hub-backend-ykcc.onrender.com";
+  process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "https://foodhub-api.tariqul.dev";
 
 export async function getSession() {
   try {

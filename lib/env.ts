@@ -4,8 +4,7 @@ export const env = {
   },
   api: {
     url:
-      process.env.NEXT_PUBLIC_API_URL ||
-      "https://food-hub-backend-ykcc.onrender.com/api",
+      process.env.NEXT_PUBLIC_API_URL || "https://foodhub-api.tariqul.dev/api",
   },
   node_env: process.env.NODE_ENV || "development",
   isDev: process.env.NODE_ENV === "development",
