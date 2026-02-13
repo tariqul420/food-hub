@@ -14,13 +14,24 @@ export async function getSession() {
       headers: {
         Cookie: cookieStore.toString(),
       },
+      credentials: "include",
       cache: "no-store",
     });
-    const session = await res.json();
-    if (!session) return null;
-    return { data: session, error: null, status: true };
+
+    if (!res.ok) {
+      console.error(`Failed to get session: ${res.status} ${res.statusText}`);
+      return null;
+    }
+
+    const data = await res.json();
+
+    if (!data || !data.session || !data.user) {
+      return null;
+    }
+
+    return { data: data, error: null, status: true };
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching session:", error);
     return null;
   }
 }
