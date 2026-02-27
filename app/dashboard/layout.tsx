@@ -15,6 +15,8 @@ export default async function layout({
   const user = await getUser();
   const role = user?.role as Role | undefined;
 
+  console.log(user);
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">

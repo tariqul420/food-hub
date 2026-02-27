@@ -1,4 +1,4 @@
-import { env } from "./env";
+import { envVars } from "./env";
 
 type Params = Record<string, string | number | boolean | undefined>;
 
@@ -20,12 +20,12 @@ function buildUrl(path: string, params?: Params) {
   if (isAbsolute) {
     url = new URL(path);
   } else {
-    const base = env.api.url;
+    const base = envVars.api.url;
     if (base.startsWith("/")) {
       const origin =
         typeof window !== "undefined"
           ? window.location.origin
-          : env.app.url.replace(/\/$/, "");
+          : envVars.app.url.replace(/\/$/, "");
       url = new URL(`${origin}${base}${normalizedPath}`);
     } else {
       // Absolute base

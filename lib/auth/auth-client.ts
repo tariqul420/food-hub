@@ -1,8 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL: "https://foodhub-api.tariqul.dev",
-  basePath: "/api/auth",
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/auth` || "http://localhost:5000",
   fetchOptions: {
     credentials: "include",
   },
